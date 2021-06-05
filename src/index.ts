@@ -1,12 +1,11 @@
-import * as fs from "fs";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { CustomDartTargetLanguage } from "./custom_dart_renderer";
 //import { DartTargetLanguage } from "./quick_type_dart";
 
-async function quicktypeJSON(targetLanguage: string, modelName: string, jsonString: string) {
-  const jsonInput = jsonInputForTargetLanguage(targetLanguage);
+async function quicktypeJSON(className: string, jsonString: string) {
+  const jsonInput = jsonInputForTargetLanguage("dart");
   await jsonInput.addSource({
-    name: modelName,
+    name: className,
     samples: [jsonString],
   });
 
@@ -14,19 +13,16 @@ async function quicktypeJSON(targetLanguage: string, modelName: string, jsonStri
   inputData.addInput(jsonInput);
 
   const lang = new CustomDartTargetLanguage();
-  //const lang = new DartTargetLanguage();
 
   return await quicktype({
     lang,
     inputData,
-    allPropertiesOptional: true,
   });
 }
 
-async function main() {
-  const jsonString = await fs.readFileSync("dart-json.json", "utf8");
-  const { lines: dartConfig } = await quicktypeJSON("dart", "GoGymClass", jsonString);
-  fs.writeFileSync("output.dart", dartConfig.join("\n"));
+export async function runQuickType(className: string, jsonString: string): Promise<string> {
+  //const jsonString = await fs.readFileSync("dart-json.json", "utf8");
+  const { lines: result } = await quicktypeJSON(className, jsonString);
+  //fs.writeFileSync("output.dart", result.join("\n"));
+  return result.join("\n");
 }
-
-main();

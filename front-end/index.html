@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../dist/app.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <script>
+      function doConvert() {
+        var jsonString = document.getElementsByClassName("input-classname").value;
+        var className = document.getElementsByClassName("input-json").value;
+        QuickType.runQuickType(
+          "Chunlee",
+          `
+        {
+            "greeting": "Welcome to quicktype!",
+            "instructions": [
+                "Type or paste JSON here",
+                "Or choose a sample above",
+                "quicktype will generate code in your",
+                "chosen language to parse the sample data"
+            ]
+        }`
+        ).then((data) => {
+          document.getElementsByClassName("output").value = data;
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm">
+          <textarea></textarea>
+          <textarea></textarea>
+        </div>
+        <div class="col-sm">One of three columns</div>
+        <div class="col-sm">One of three columns</div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -28,33 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __importStar(require("fs"));
+exports.runQuickType = void 0;
 const quicktype_core_1 = require("quicktype-core");
 const custom_dart_renderer_1 = require("./custom_dart_renderer");
 //import { DartTargetLanguage } from "./quick_type_dart";
-function quicktypeJSON(targetLanguage, modelName, jsonString) {
+function quicktypeJSON(className, jsonString) {
     return __awaiter(this, void 0, void 0, function* () {
-        const jsonInput = quicktype_core_1.jsonInputForTargetLanguage(targetLanguage);
+        const jsonInput = quicktype_core_1.jsonInputForTargetLanguage("dart");
         yield jsonInput.addSource({
-            name: modelName,
+            name: className,
             samples: [jsonString],
         });
         const inputData = new quicktype_core_1.InputData();
         inputData.addInput(jsonInput);
         const lang = new custom_dart_renderer_1.CustomDartTargetLanguage();
-        //const lang = new DartTargetLanguage();
         return yield quicktype_core_1.quicktype({
             lang,
             inputData,
-            allPropertiesOptional: true,
         });
     });
 }
-function main() {
+function runQuickType(className, jsonString) {
     return __awaiter(this, void 0, void 0, function* () {
-        const jsonString = yield fs.readFileSync("dart-json.json", "utf8");
-        const { lines: dartConfig } = yield quicktypeJSON("dart", "GoGymClass", jsonString);
-        fs.writeFileSync("output.dart", dartConfig.join("\n"));
+        //const jsonString = await fs.readFileSync("dart-json.json", "utf8");
+        const { lines: result } = yield quicktypeJSON(className, jsonString);
+        //fs.writeFileSync("output.dart", result.join("\n"));
+        return result.join("\n");
     });
 }
-main();
+exports.runQuickType = runQuickType;
