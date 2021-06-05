@@ -17,12 +17,11 @@ async function quicktypeJSON(className: string, jsonString: string) {
   return await quicktype({
     lang,
     inputData,
+    allPropertiesOptional: true,
   });
 }
 
 export async function runQuickType(className: string, jsonString: string): Promise<string> {
-  //const jsonString = await fs.readFileSync("dart-json.json", "utf8");
   const { lines: result } = await quicktypeJSON(className, jsonString);
-  //fs.writeFileSync("output.dart", result.join("\n"));
   return result.join("\n");
 }

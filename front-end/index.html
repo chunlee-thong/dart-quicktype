@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Dart QuickType</title>
     <script src="../dist/app.js"></script>
     <link rel="stylesheet" href="style.css" />
     <!-- CSS only -->
@@ -14,38 +14,52 @@
       integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
       crossorigin="anonymous"
     />
-    <script>
-      function doConvert() {
-        var jsonString = document.getElementsByClassName("input-classname").value;
-        var className = document.getElementsByClassName("input-json").value;
-        QuickType.runQuickType(
-          "Chunlee",
-          `
-        {
-            "greeting": "Welcome to quicktype!",
-            "instructions": [
-                "Type or paste JSON here",
-                "Or choose a sample above",
-                "quicktype will generate code in your",
-                "chosen language to parse the sample data"
-            ]
-        }`
-        ).then((data) => {
-          document.getElementsByClassName("output").value = data;
-        });
-      }
-    </script>
+    <link rel="stylesheet" href="./highlight/styles/default.css" />
+    <script src="./highlight/highlight.min.js"></script>
   </head>
+
   <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm">
-          <textarea></textarea>
-          <textarea></textarea>
-        </div>
-        <div class="col-sm">One of three columns</div>
-        <div class="col-sm">One of three columns</div>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Dart QuickType</a>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="left-side">
+        <label>Class name</label>
+        <input type="text" class="input" placeholder="Class name" />
+        <textarea class="input" id="json-input" placeholder="JSON String"></textarea>
+      </div>
+      <div class="left-side">
+        <label>Output</label>
+        <pre>
+          <code class="output language-dart" id="output" placeholder="dart class"></code>
+        </pre>
       </div>
     </div>
   </body>
+  <script>
+    const debounce = (func, wait) => {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+    const doConvert = debounce(function (e) {
+      var jsonString = e.target.value;
+      QuickType.runQuickType("Chunlee", jsonString).then((data) => {
+        console.log(data);
+        document.getElementById("output").innerHTML = data;
+      });
+    }, 1000);
+
+    var source = document.getElementById("json-input");
+    source.addEventListener("change", doConvert);
+  </script>
 </html>

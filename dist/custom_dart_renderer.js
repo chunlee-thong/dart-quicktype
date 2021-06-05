@@ -428,13 +428,14 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 // );
             }
             this.ensureBlankLine();
-            this.emitLine("factory ", className, ".", this.fromJson, "(Map<String, dynamic> json) => ", className, "(");
+            this.emitLine("factory ", className, ".", this.fromJson, "(Map<String, dynamic> json){ ", "", "return ", className, "(");
             this.indent(() => {
                 this.forEachClassProperty(c, "none", (name, jsonName, property) => {
                     this.emitLine(name, ": ", this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'), ",");
                 });
             });
             this.emitLine(");");
+            this.emitLine("}");
             this.ensureBlankLine();
             // this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
             // this.indent(() => {

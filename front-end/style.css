@@ -1,8 +1,38 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
 .content {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  height: 100%;
   margin: auto;
-  padding: 64px;
+  padding: 16px;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 40vw;
+  padding: 1em;
+  margin-bottom: 12px;
+  margin-right: 16px;
+}
+
+.output {
+  width: 50vw;
+  height: 100px;
+  padding: 1em;
+}
+
+label {
+  margin-bottom: 12px;
 }

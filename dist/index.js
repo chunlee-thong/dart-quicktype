@@ -26,14 +26,13 @@ function quicktypeJSON(className, jsonString) {
         return yield quicktype_core_1.quicktype({
             lang,
             inputData,
+            allPropertiesOptional: true,
         });
     });
 }
 function runQuickType(className, jsonString) {
     return __awaiter(this, void 0, void 0, function* () {
-        //const jsonString = await fs.readFileSync("dart-json.json", "utf8");
         const { lines: result } = yield quicktypeJSON(className, jsonString);
-        //fs.writeFileSync("output.dart", result.join("\n"));
         return result.join("\n");
     });
 }

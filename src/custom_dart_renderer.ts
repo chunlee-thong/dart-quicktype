@@ -640,7 +640,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         className,
         ".",
         this.fromJson,
-        "(Map<String, dynamic> json) => ",
+        "(Map<String, dynamic> json){ ",
+        "",
+        "return ",
         className,
         "("
       );
@@ -655,6 +657,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         });
       });
       this.emitLine(");");
+      this.emitLine("}");
 
       this.ensureBlankLine();
 
