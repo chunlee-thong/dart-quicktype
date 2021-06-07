@@ -22,9 +22,22 @@ body {
 
 .input {
   width: 40vw;
-  padding: 1em;
+  padding: 0.5em;
+  font-size: 12px;
+  background-color: darkcyan;
   margin-bottom: 12px;
+  color: white;
+  font-family: monospace;
   margin-right: 16px;
+}
+
+textarea {
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 0.7; /* Firefox */
 }
 
 .output {

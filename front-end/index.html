@@ -27,8 +27,9 @@
     <div class="content">
       <div class="left-side">
         <label>Class name</label>
-        <input type="text" class="input" placeholder="Class name" />
-        <textarea class="input" id="json-input" placeholder="JSON String"></textarea>
+        <input type="text" class="input" id="class-name" placeholder="Class name" required />
+        <textarea class="input" id="json-input" placeholder="JSON String" rows="20"></textarea>
+        <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
       </div>
       <div class="left-side">
         <label>Output</label>
@@ -51,15 +52,14 @@
         timeout = setTimeout(later, wait);
       };
     };
-    const doConvert = debounce(function (e) {
-      var jsonString = e.target.value;
-      QuickType.runQuickType("Chunlee", jsonString).then((data) => {
+    const doConvert = debounce(function () {
+      var className = document.getElementById("class-name");
+      let jsonString = document.getElementById("json-input").value;
+      QuickType.runQuickType(className.value, jsonString).then((data) => {
         console.log(data);
         document.getElementById("output").innerHTML = data;
       });
     }, 1000);
-
-    var source = document.getElementById("json-input");
-    source.addEventListener("change", doConvert);
+    // source.addEventListener("change", doConvert);
   </script>
 </html>
