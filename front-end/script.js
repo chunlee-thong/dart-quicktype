@@ -20,7 +20,7 @@ window.onload = function () {
 };
 
 function copyCode() {
-  const output = document.getElementById("output").value;
+  const output = document.getElementById("output").innerHTML;
   if (output) {
     const cb = navigator.clipboard;
     cb.writeText(output);
@@ -35,6 +35,7 @@ const doConvert = debounce(function () {
       localStorage.setItem(classNameInput, className);
       localStorage.setItem(jsonInput, jsonString);
       document.getElementById("output").innerHTML = data;
+      PR.prettyPrint();
     })
     .catch((err) => {
       alert(err);
