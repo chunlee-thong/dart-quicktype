@@ -276,8 +276,10 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
         this.indent(f);
         this.emitLine("}");
     }
-    dartType(t, withIssues = false) {
-        return TypeUtils_1.matchType(t, (_anyType) => Source_1.maybeAnnotated(withIssues, Annotation_1.anyTypeIssueAnnotation, "dynamic"), (_nullType) => Source_1.maybeAnnotated(withIssues, Annotation_1.nullTypeIssueAnnotation, "dynamic"), (_boolType) => "bool?", (_integerType) => "int?", (_doubleType) => "double?", (_stringType) => "String?", (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">?"], (classType) => this.nameForNamedType(classType), (mapType) => ["Map<String, ", this.dartType(mapType.values, withIssues), ">?"], (enumType) => this.nameForNamedType(enumType), (unionType) => {
+    dartType(t, withIssues = false, nullable = false) {
+        return TypeUtils_1.matchType(t, (_anyType) => Source_1.maybeAnnotated(withIssues, Annotation_1.anyTypeIssueAnnotation, "dynamic"), (_nullType) => Source_1.maybeAnnotated(withIssues, Annotation_1.nullTypeIssueAnnotation, "dynamic"), (_boolType) => "bool", (_integerType) => "int", (_doubleType) => "double", (_stringType) => "String", (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">"], (classType) => {
+            return this.nameForNamedType(classType);
+        }, (mapType) => ["Map<String, ", this.dartType(mapType.values, withIssues), ">"], (enumType) => this.nameForNamedType(enumType), (unionType) => {
             const maybeNullable = TypeUtils_1.nullableFromUnion(unionType);
             if (maybeNullable === null) {
                 return "dynamic";
@@ -287,9 +289,9 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
             switch (transformedStringType.kind) {
                 case "date-time":
                 case "date":
-                    return "DateTime?";
+                    return "DateTime";
                 default:
-                    return "String?";
+                    return "String";
             }
         });
     }
@@ -373,6 +375,7 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 this.emitLine("});");
                 this.ensureBlankLine();
                 this.forEachClassProperty(c, "none", (name, jsonName, p) => {
+                    var _a;
                     const description = this.descriptionForClassProperty(c, jsonName);
                     if (description !== undefined) {
                         this.emitDescription(description);
@@ -381,7 +384,21 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                         this.classPropertyCounter++;
                         this.emitLine(`@HiveField(${this.classPropertyCounter})`);
                     }
-                    this.emitLine(this._options.finalProperties ? "final " : "", this.dartType(p.type, true), " ", name, ";");
+                    const type = this.dartType(p.type, true);
+                    let letBeNull = true;
+                    if (typeof type === "object") {
+                        const isArray = Array.isArray(type);
+                        if (!isArray && type["kind"] === "annotated") {
+                            letBeNull = false;
+                        }
+                    }
+                    if (name["_unstyledNames"]) {
+                        const nameSet = (_a = name["_unstyledNames"]) !== null && _a !== void 0 ? _a : {};
+                        if (nameSet.has("_id") || nameSet.has("id")) {
+                            letBeNull = false;
+                        }
+                    }
+                    this.emitLine(this._options.finalProperties ? "final " : "", type, letBeNull ? "? " : " ", name, ";");
                 });
             }
             if (this._options.generateCopyWith) {
@@ -389,7 +406,7 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 this.emitLine(className, " copyWith({");
                 this.indent(() => {
                     this.forEachClassProperty(c, "none", (name, _, _p) => {
-                        this.emitLine(this.dartType(_p.type, true), " ", name, ",");
+                        this.emitLine(this.dartType(_p.type, true, nullable), " ", name, ",");
                     });
                 });
                 this.emitLine("}) => ");

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc -p . && webpack",
-    "test": "ts-node test/test.ts"
+    "test": "ts-node src/test/test.ts"
   },
   "keywords": [],
   "author": "",

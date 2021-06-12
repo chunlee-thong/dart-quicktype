@@ -414,18 +414,20 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.emitLine("}");
   }
 
-  protected dartType(t: Type, withIssues: boolean = false): Sourcelike {
+  protected dartType(t: Type, withIssues: boolean = false, nullable: boolean = false): Sourcelike {
     return matchType<Sourcelike>(
       t,
       (_anyType) => maybeAnnotated(withIssues, anyTypeIssueAnnotation, "dynamic"),
       (_nullType) => maybeAnnotated(withIssues, nullTypeIssueAnnotation, "dynamic"),
-      (_boolType) => "bool?",
-      (_integerType) => "int?",
-      (_doubleType) => "double?",
-      (_stringType) => "String?",
-      (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">?"],
-      (classType) => this.nameForNamedType(classType),
-      (mapType) => ["Map<String, ", this.dartType(mapType.values, withIssues), ">?"],
+      (_boolType) => "bool",
+      (_integerType) => "int",
+      (_doubleType) => "double",
+      (_stringType) => "String",
+      (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">"],
+      (classType) => {
+        return this.nameForNamedType(classType);
+      },
+      (mapType) => ["Map<String, ", this.dartType(mapType.values, withIssues), ">"],
       (enumType) => this.nameForNamedType(enumType),
       (unionType) => {
         const maybeNullable = nullableFromUnion(unionType);
@@ -438,9 +440,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         switch (transformedStringType.kind) {
           case "date-time":
           case "date":
-            return "DateTime?";
+            return "DateTime";
           default:
-            return "String?";
+            return "String";
         }
       }
     );
@@ -577,11 +579,24 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             this.classPropertyCounter++;
             this.emitLine(`@HiveField(${this.classPropertyCounter})`);
           }
-
+          const type = this.dartType(p.type, true);
+          let letBeNull = true;
+          if (typeof type === "object") {
+            const isArray = Array.isArray(type);
+            if (!isArray && type["kind"] === "annotated") {
+              letBeNull = false;
+            }
+          }
+          if (name["_unstyledNames"]) {
+            const nameSet: Set<string> = name["_unstyledNames"] ?? {};
+            if (nameSet.has("_id") || nameSet.has("id")) {
+              letBeNull = false;
+            }
+          }
           this.emitLine(
             this._options.finalProperties ? "final " : "",
-            this.dartType(p.type, true),
-            " ",
+            type,
+            letBeNull ? "? " : " ",
             name,
             ";"
           );
@@ -593,7 +608,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.emitLine(className, " copyWith({");
         this.indent(() => {
           this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this.dartType(_p.type, true), " ", name, ",");
+            this.emitLine(this.dartType(_p.type, true, nullable), " ", name, ",");
           });
         });
         this.emitLine("}) => ");

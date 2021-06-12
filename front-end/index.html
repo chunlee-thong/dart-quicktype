@@ -14,8 +14,7 @@
       integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./highlight/styles/default.css" />
-    <script src="./highlight/highlight.min.js"></script>
+    <script src="./script.js"></script>
   </head>
 
   <body>
@@ -31,35 +30,11 @@
         <textarea class="input" id="json-input" placeholder="JSON String" rows="20"></textarea>
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
       </div>
-      <div class="left-side">
+      <div class="right-side">
         <label>Output</label>
-        <pre>
-          <code class="output language-dart" id="output" placeholder="dart class"></code>
-        </pre>
+        <button class="btn btn-primary" onclick="copyCode()">Copy Code</button>
+        <textarea id="output" readonly></textarea>
       </div>
     </div>
   </body>
-  <script>
-    const debounce = (func, wait) => {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    };
-    const doConvert = debounce(function () {
-      var className = document.getElementById("class-name");
-      let jsonString = document.getElementById("json-input").value;
-      QuickType.runQuickType(className.value, jsonString).then((data) => {
-        console.log(data);
-        document.getElementById("output").innerHTML = data;
-      });
-    }, 1000);
-    // source.addEventListener("change", doConvert);
-  </script>
 </html>
