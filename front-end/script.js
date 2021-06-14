@@ -20,7 +20,8 @@ window.onload = function () {
 };
 
 function copyCode() {
-  const output = document.getElementById("output").innerHTML;
+  const output = document.getElementById("output").value;
+  console.log(output);
   if (output) {
     const cb = navigator.clipboard;
     cb.writeText(output);
@@ -32,10 +33,11 @@ const doConvert = debounce(function () {
   let jsonString = document.getElementById(jsonInput).value;
   QuickType.runQuickType(className, jsonString)
     .then((data) => {
+      console.log(data);
       localStorage.setItem(classNameInput, className);
       localStorage.setItem(jsonInput, jsonString);
       document.getElementById("output").innerHTML = data;
-      PR.prettyPrint();
+      document.getElementById("output").value = data;
     })
     .catch((err) => {
       alert(err);

@@ -22,6 +22,8 @@ body {
 
 .right-side {
   margin-left: 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .input {
@@ -32,6 +34,12 @@ body {
   margin-bottom: 12px;
   color: white;
   margin-right: 16px;
+}
+
+#output {
+  width: 50vw;
+  margin-top: 12px;
+  height: 100%;
 }
 
 ::placeholder {
