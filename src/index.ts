@@ -18,6 +18,7 @@ async function quicktypeJSON(className: string, jsonString: string) {
     lang,
     inputData,
     allPropertiesOptional: true,
+    inferEnums: false,
   });
 }
 
