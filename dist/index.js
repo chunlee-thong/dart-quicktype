@@ -27,6 +27,7 @@ function quicktypeJSON(className, jsonString) {
             lang,
             inputData,
             allPropertiesOptional: true,
+            inferEnums: false,
         });
     });
 }
