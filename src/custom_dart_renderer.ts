@@ -52,7 +52,7 @@ export const dartOptions = {
   methodNamesWithMap: new BooleanOption("from-map", "Use method names fromMap() & toMap()", false),
   requiredProperties: new BooleanOption("required-props", "Make all properties required", true),
   finalProperties: new BooleanOption("final-props", "Make all properties final", true),
-  generateCopyWith: new BooleanOption("copy-with", "Generate CopyWith method", false),
+  generateCopyWith: new BooleanOption("copy-with", "Generate CopyWith method", true),
   useFreezed: new BooleanOption(
     "use-freezed",
     "Generate class definitions with @freezed compatibility",
