@@ -492,6 +492,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         if (maybeNullable === null) {
           return dynamic;
         }
+        //TODO: remove null check
         return [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)];
       },
       (transformedStringType) => {
@@ -655,6 +656,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         className,
         ".",
         this.fromJson,
+        //TODO: make this json nullable
         "(Map<String, dynamic> json){ ",
         "",
         "return ",
@@ -666,6 +668,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine(
             name,
             ": ",
+            //TODO: add ? after json. json can be null because we remove null check
             this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
             ","
           );
