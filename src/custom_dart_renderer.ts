@@ -608,7 +608,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.emitLine(className, " copyWith({");
         this.indent(() => {
           this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this.dartType(_p.type, true, true), " ", name, ",");
+            this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
           });
         });
         this.emitLine("}) => ");
