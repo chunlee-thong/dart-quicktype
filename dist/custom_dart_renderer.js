@@ -462,18 +462,19 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 });
             });
             this.emitLine(");");
+            this.emitLine("}");
             //Generate toString method
-            // this.ensureBlankLine();
-            // this.emitLine("@override");
-            // this.emitLine("String toString(){");
-            // let data = "return '";
-            // this.indent(() => {
-            //   this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-            //     data += `$${name} `;
-            //   });
-            //   return data;
-            // });
-            // this.emitLine(data, "';");
+            this.ensureBlankLine();
+            this.emitLine("@override");
+            this.emitLine("String toString(){");
+            let data = "return '";
+            this.indent(() => {
+                this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+                    data += "$" + this.sourcelikeToString(name) + " ";
+                });
+                return data;
+            });
+            this.emitLine(data, "';");
             //
             this.emitLine("}");
             this.ensureBlankLine();
