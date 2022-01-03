@@ -19,7 +19,7 @@ exports.dartOptions = {
     methodNamesWithMap: new RendererOptions_1.BooleanOption("from-map", "Use method names fromMap() & toMap()", false),
     requiredProperties: new RendererOptions_1.BooleanOption("required-props", "Make all properties required", true),
     finalProperties: new RendererOptions_1.BooleanOption("final-props", "Make all properties final", true),
-    generateCopyWith: new RendererOptions_1.BooleanOption("copy-with", "Generate CopyWith method", false),
+    generateCopyWith: new RendererOptions_1.BooleanOption("copy-with", "Generate CopyWith method", true),
     useFreezed: new RendererOptions_1.BooleanOption("use-freezed", "Generate class definitions with @freezed compatibility", false),
     useHive: new RendererOptions_1.BooleanOption("use-hive", "Generate annotations for Hive type adapters", false),
     partName: new RendererOptions_1.StringOption("part-name", "Use this name in `part` directive", "NAME", ""),
@@ -296,7 +296,7 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
         });
     }
     mapList(itemType, list, mapper) {
-        return ["List<", itemType, ">.from(", list, ".map((x) => ", mapper, "))"];
+        return [list, " == null ? null : ", "List<", itemType, ">.from(", list, ".map((x) => ", mapper, "))"];
     }
     mapMap(valueType, map, valueMapper) {
         return [
@@ -311,17 +311,19 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
     }
     fromDynamicExpression(t, ...dynamic) {
         return TypeUtils_1.matchType(t, (_anyType) => dynamic, (_nullType) => dynamic, // FIXME: check null
-        (_boolType) => dynamic, (_integerType) => dynamic, (_doubleType) => [dynamic, ".toDouble()"], (_stringType) => dynamic, (arrayType) => this.mapList(this.dartType(arrayType.items), dynamic, this.fromDynamicExpression(arrayType.items, "x")), (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"], (mapType) => this.mapMap(this.dartType(mapType.values), dynamic, this.fromDynamicExpression(mapType.values, "v")), (enumType) => [Support_1.defined(this._enumValues.get(enumType)), ".map[", dynamic, "]"], (unionType) => {
+        (_boolType) => dynamic, (_integerType) => dynamic, (_doubleType) => [dynamic], (_stringType) => dynamic, (arrayType) => this.mapList(this.dartType(arrayType.items), dynamic, this.fromDynamicExpression(arrayType.items, "x")), (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"], (mapType) => this.mapMap(this.dartType(mapType.values), dynamic, this.fromDynamicExpression(mapType.values, "v")), (enumType) => [Support_1.defined(this._enumValues.get(enumType)), ".map[", dynamic, "]"], (unionType) => {
             const maybeNullable = TypeUtils_1.nullableFromUnion(unionType);
             if (maybeNullable === null) {
                 return dynamic;
             }
-            return [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)];
+            //TODO: remove null check
+            return [this.fromDynamicExpression(maybeNullable, dynamic)];
+            //return [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)];
         }, (transformedStringType) => {
             switch (transformedStringType.kind) {
                 case "date-time":
                 case "date":
-                    return ["DateTime.parse(", dynamic, ")"];
+                    return [dynamic, " == null ? null : ", "DateTime.parse(", dynamic, ")"];
                 default:
                     return dynamic;
             }
@@ -375,7 +377,6 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 this.emitLine("});");
                 this.ensureBlankLine();
                 this.forEachClassProperty(c, "none", (name, jsonName, p) => {
-                    var _a;
                     const description = this.descriptionForClassProperty(c, jsonName);
                     if (description !== undefined) {
                         this.emitDescription(description);
@@ -386,18 +387,18 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                     }
                     const type = this.dartType(p.type, true);
                     let letBeNull = true;
-                    if (typeof type === "object") {
-                        const isArray = Array.isArray(type);
-                        if (!isArray && type["kind"] === "annotated") {
-                            letBeNull = false;
-                        }
-                    }
-                    if (name["_unstyledNames"]) {
-                        const nameSet = (_a = name["_unstyledNames"]) !== null && _a !== void 0 ? _a : {};
-                        if (nameSet.has("_id") || nameSet.has("id")) {
-                            letBeNull = false;
-                        }
-                    }
+                    // if (typeof type === "object") {
+                    //   const isArray = Array.isArray(type);
+                    //   if (!isArray && type["kind"] === "annotated") {
+                    //     letBeNull = false;
+                    //   }
+                    // }
+                    // if (name["_unstyledNames"]) {
+                    //   const nameSet: Set<string> = name["_unstyledNames"] ?? {};
+                    //   if (nameSet.has("_id") || nameSet.has("id")) {
+                    //     letBeNull = false;
+                    //   }
+                    // }
                     this.emitLine(this._options.finalProperties ? "final " : "", type, letBeNull ? "? " : " ", name, ";");
                 });
             }
@@ -406,18 +407,20 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 this.emitLine(className, " copyWith({");
                 this.indent(() => {
                     this.forEachClassProperty(c, "none", (name, _, _p) => {
-                        this.emitLine(this.dartType(_p.type, true, nullable), " ", name, ",");
+                        this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
                     });
                 });
-                this.emitLine("}) => ");
+                this.emitLine("}) {");
                 this.indent(() => {
-                    this.emitLine(className, "(");
+                    this.emitLine("return ", className, "(");
                     this.indent(() => {
                         this.forEachClassProperty(c, "none", (name, _, _p) => {
                             this.emitLine(name, ": ", name, " ?? ", "this.", name, ",");
                         });
                     });
                     this.emitLine(");");
+                    this.emitLine("}");
+                    this.ensureBlankLine();
                 });
             }
             if (this._options.justTypes)
@@ -445,13 +448,35 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 // );
             }
             this.ensureBlankLine();
-            this.emitLine("factory ", className, ".", this.fromJson, "(Map<String, dynamic> json){ ", "", "return ", className, "(");
+            this.emitLine("factory ", className, ".", this.fromJson, 
+            //TODO: make this json nullable
+            "(Map<String, dynamic>? json){ ");
+            this.indent(() => {
+                this.emitLine("return ", className, "(");
+            });
             this.indent(() => {
                 this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-                    this.emitLine(name, ": ", this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'), ",");
+                    this.emitLine(name, ": ", 
+                    //TODO: add ? after json. json can be null because we remove null check
+                    this.fromDynamicExpression(property.type, 'json?["', stringEscape(jsonName), '"]'), ",");
                 });
             });
             this.emitLine(");");
+            this.ensureBlankLine();
+            this.ensureBlankLine();
+            //Generate toString method
+            this.emitLine("@override");
+            this.emitLine("String toString(){");
+            let data = "return '";
+            this.indent(() => {
+                this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+                    data += `$${name} `;
+                });
+                return data;
+            });
+            this.emitLine(data, "';");
+            this.emitLine("}");
+            //
             this.emitLine("}");
             this.ensureBlankLine();
             // this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
