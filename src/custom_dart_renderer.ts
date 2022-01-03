@@ -689,7 +689,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       let data = "return '";
       this.indent(() => {
         this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-          data += "$" + this.sourcelikeToString(name) + " ";
+          data += "$" + this.sourcelikeToString(name) + ", ";
         });
         return data;
       });
