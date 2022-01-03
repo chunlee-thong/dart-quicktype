@@ -17,5 +17,5 @@ Also This below features are still only available in [preview](https://deploy-pr
 
 ## URL
 
-Production: https://dart-quicktype.netlify.app/
-Preview: https://deploy-preview-1--dart-quicktype.netlify.app/
+- Production: https://dart-quicktype.netlify.app/
+- Preview: https://deploy-preview-1--dart-quicktype.netlify.app/
