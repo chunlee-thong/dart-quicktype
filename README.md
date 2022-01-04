@@ -19,3 +19,9 @@ Also This below features are still only available in [preview](https://deploy-pr
 
 - Production: https://dart-quicktype.netlify.app/
 - Preview: https://deploy-preview-1--dart-quicktype.netlify.app/
+
+## Folder
+
+- src: custom Dart renderer modified from QuickType and written in Typescipt
+- dist: compiled TS code into vanilla JS using webpack
+- front-end: plain HTML site
