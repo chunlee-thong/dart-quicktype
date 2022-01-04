@@ -583,18 +583,18 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           }
           const type = this.dartType(p.type, true);
           let letBeNull = true;
-          // if (typeof type === "object") {
-          //   const isArray = Array.isArray(type);
-          //   if (!isArray && type["kind"] === "annotated") {
-          //     letBeNull = false;
-          //   }
-          // }
-          // if (name["_unstyledNames"]) {
-          //   const nameSet: Set<string> = name["_unstyledNames"] ?? {};
-          //   if (nameSet.has("_id") || nameSet.has("id")) {
-          //     letBeNull = false;
-          //   }
-          // }
+          if (typeof type === "object") {
+            const isArray = Array.isArray(type);
+            if (!isArray && type["kind"] === "annotated") {
+              letBeNull = false;
+            }
+          }
+          if (name["_unstyledNames"]) {
+            const nameSet: Set<string> = name["_unstyledNames"] ?? {};
+            if (nameSet.has("_id") || nameSet.has("id")) {
+              letBeNull = false;
+            }
+          }
           this.emitLine(
             this._options.finalProperties ? "final " : "",
             type,
