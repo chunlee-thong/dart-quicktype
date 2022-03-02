@@ -2,7 +2,14 @@ import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core
 import { CustomDartTargetLanguage } from "./custom_dart_renderer";
 //import { DartTargetLanguage } from "./quick_type_dart";
 
-async function quicktypeJSON(className: string, jsonString: string) {
+
+export type CustomDartOption = {
+  generateToString: boolean,
+  generateCopyWith: boolean,
+  generateToJson: boolean,
+}
+
+export async function runQuickType(className: string, jsonString: string, dartOptions: CustomDartOption): Promise<string> {
   const jsonInput = jsonInputForTargetLanguage("dart");
   await jsonInput.addSource({
     name: className,
@@ -12,17 +19,12 @@ async function quicktypeJSON(className: string, jsonString: string) {
   const inputData = new InputData();
   inputData.addInput(jsonInput);
 
-  const lang = new CustomDartTargetLanguage();
-
-  return await quicktype({
-    lang,
+  const dartLang = new CustomDartTargetLanguage(dartOptions);
+  const { lines: result } = await quicktype({
+    lang: dartLang,
     inputData,
     allPropertiesOptional: true,
     inferEnums: false,
-  });
-}
-
-export async function runQuickType(className: string, jsonString: string): Promise<string> {
-  const { lines: result } = await quicktypeJSON(className, jsonString);
+  })
   return result.join("\n");
 }

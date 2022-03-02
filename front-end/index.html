@@ -32,7 +32,7 @@
     </nav>
     <div class="content">
       <div class="left-side">
-        <label>Class name</label>
+        <h2>Class name</h2>
         <input
           type="text"
           class="input form-control"
@@ -40,6 +40,10 @@
           placeholder="Class name"
           required
         />
+        <label for="gen-json"><input type="checkbox" id="gen-json"> Generate to JSON</label>
+        <label for="gen-cpy"><input type="checkbox" id="gen-cpy"> Generate copyWith</label>
+        <label for="gen-ts"><input type="checkbox" id="gen-ts"> Generate toString</label>
+        <h2></h2>
         <textarea
           class="input form-control"
           id="json-input"
@@ -49,7 +53,7 @@
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
       </div>
       <div class="right-side">
-        <label>Output</label>
+        <h2>Output</h2>
         <button class="btn btn-primary" onclick="copyCode()">Copy Code</button>
         <textarea id="output" class="form-control" readonly></textarea>
       </div>
