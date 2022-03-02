@@ -4,16 +4,10 @@ A custom implemenation of JSON to Dart model class from [QuickType](https://gith
 
 This project is configure to fit my use case only so the default behavior will be:
 
-- All properties **final**
-- Every field is **nullable** and **required**
-- Only has **fromJson** method, doesn't have **toJson**
-- Always generate **copyWith** method
-
-Also This below features are still only available in [preview](https://deploy-preview-1--dart-quicktype.netlify.app/) branch:
-
-- rework Json check syntax
-- add **toString** override
-
+- All fields are **final**
+- All fields are **nullable** and **required**
+- has an option to generate toJSON,copyWith and toString
+- No freezed or hive
 
 ## URL
 
