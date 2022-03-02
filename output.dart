@@ -53,62 +53,6 @@ class MyClass {
     final List<String>? images;
     final Address? address;
 
-    MyClass copyWith({
-        DateTime? updatedAt,
-        DateTime? createdAt,
-        dynamic? deletedAt,
-        int? id,
-        String? image,
-        String? name,
-        String? timeIn,
-        String? timeOut,
-        String? dayOfWeek,
-        int? limit,
-        String? description,
-        String? khDescription,
-        bool? active,
-        int? instructorId,
-        int? serviceId,
-        dynamic? service,
-        int? count,
-        String? status,
-        List<dynamic>? join,
-        DateTime? date,
-        int? age,
-        double? money,
-        bool? sick,
-        List<String>? images,
-        Address? address,
-    }) {
-        return MyClass(
-            updatedAt: updatedAt ?? this.updatedAt,
-            createdAt: createdAt ?? this.createdAt,
-            deletedAt: deletedAt ?? this.deletedAt,
-            id: id ?? this.id,
-            image: image ?? this.image,
-            name: name ?? this.name,
-            timeIn: timeIn ?? this.timeIn,
-            timeOut: timeOut ?? this.timeOut,
-            dayOfWeek: dayOfWeek ?? this.dayOfWeek,
-            limit: limit ?? this.limit,
-            description: description ?? this.description,
-            khDescription: khDescription ?? this.khDescription,
-            active: active ?? this.active,
-            instructorId: instructorId ?? this.instructorId,
-            serviceId: serviceId ?? this.serviceId,
-            service: service ?? this.service,
-            count: count ?? this.count,
-            status: status ?? this.status,
-            join: join ?? this.join,
-            date: date ?? this.date,
-            age: age ?? this.age,
-            money: money ?? this.money,
-            sick: sick ?? this.sick,
-            images: images ?? this.images,
-            address: address ?? this.address,
-        );
-        }
-
     factory MyClass.fromJson(Map<String, dynamic>? json){ 
         return MyClass(
         updatedAt: json?["updated_at"] == null ? null : DateTime.parse(json?["updated_at"]),
@@ -139,6 +83,11 @@ class MyClass {
     );
     }
 
+    @override
+    String toString(){
+    return '$updatedAt, $createdAt, $deletedAt, $id, $image, $name, $timeIn, $timeOut, $dayOfWeek, $limit, $description, $khDescription, $active, $instructorId, $serviceId, $service, $count, $status, $join, $date, $age, $money, $sick, $images, $address';
+    }
+
 }
 
 class Address {
@@ -150,21 +99,16 @@ class Address {
     final String? street;
     final String? city;
 
-    Address copyWith({
-        String? street,
-        String? city,
-    }) {
-        return Address(
-            street: street ?? this.street,
-            city: city ?? this.city,
-        );
-        }
-
     factory Address.fromJson(Map<String, dynamic>? json){ 
         return Address(
         street: json?["street"],
         city: json?["city"],
     );
+    }
+
+    @override
+    String toString(){
+    return '$street, $city';
     }
 
 }

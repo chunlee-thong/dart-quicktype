@@ -26,5 +26,11 @@ export async function runQuickType(className: string, jsonString: string, dartOp
     allPropertiesOptional: true,
     inferEnums: false,
   })
-  return result.join("\n");
+  let data = result.join("\n");
+
+  ///Replace , at the end of toString() generation
+  var find = ", '";
+  var regex = new RegExp(find, 'g');
+  data = data.replace(regex, "'");
+  return data;
 }
