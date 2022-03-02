@@ -33,7 +33,11 @@ const index_1 = require("../index");
 function test() {
     return __awaiter(this, void 0, void 0, function* () {
         const jsonString = yield fs.readFileSync("dart-json.json", "utf8");
-        const result = yield index_1.runQuickType("MyClass", jsonString);
+        const result = yield index_1.runQuickType("MyClass", jsonString, {
+            generateToString: false,
+            generateCopyWith: true,
+            generateToJson: false,
+        });
         fs.writeFileSync("output.dart", result);
     });
 }

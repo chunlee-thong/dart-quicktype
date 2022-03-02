@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runQuickType = void 0;
 const quicktype_core_1 = require("quicktype-core");
 const custom_dart_renderer_1 = require("./custom_dart_renderer");
-//import { DartTargetLanguage } from "./quick_type_dart";
-function quicktypeJSON(className, jsonString) {
+function runQuickType(className, jsonString, dartOptions) {
     return __awaiter(this, void 0, void 0, function* () {
         const jsonInput = quicktype_core_1.jsonInputForTargetLanguage("dart");
         yield jsonInput.addSource({
@@ -22,18 +21,13 @@ function quicktypeJSON(className, jsonString) {
         });
         const inputData = new quicktype_core_1.InputData();
         inputData.addInput(jsonInput);
-        const lang = new custom_dart_renderer_1.CustomDartTargetLanguage();
-        return yield quicktype_core_1.quicktype({
-            lang,
+        const dartLang = new custom_dart_renderer_1.CustomDartTargetLanguage(dartOptions);
+        const { lines: result } = yield quicktype_core_1.quicktype({
+            lang: dartLang,
             inputData,
             allPropertiesOptional: true,
             inferEnums: false,
         });
-    });
-}
-function runQuickType(className, jsonString) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { lines: result } = yield quicktypeJSON(className, jsonString);
         return result.join("\n");
     });
 }

@@ -48,8 +48,3 @@ body {
   opacity: 0.7; /* Firefox */
 }
 
-label {
-  margin-bottom: 12px;
-  margin-right: 10rem;
-  font-size: 2rem;
-}

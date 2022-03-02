@@ -17,5 +17,17 @@
   "service": null,
   "count": 0,
   "status": "available",
-  "join": []
+  "join": [],
+  "date": "2012-02-27 13:27:00",
+  "age": 32,
+  "money": 23.5,
+  "sick": false,
+  "images": [
+    "chunlee.jpg",
+    "kappa.png"
+  ],
+  "address": {
+    "street": "9MC",
+    "city": "PP"
+  }
 }
