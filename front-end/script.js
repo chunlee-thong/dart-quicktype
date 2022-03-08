@@ -1,26 +1,8 @@
-const debounce = (func, wait) => {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
-
 const jsonInput = "json-input";
 const classNameInput = "class-name";
 const genJson = "gen-json";
 const genCPY = "gen-cpy";
 const genTS = "gen-ts";
-
-
-
-
-
 
 window.onload = function () {
   document.getElementById(jsonInput).value = localStorage.getItem(jsonInput);
@@ -30,19 +12,19 @@ window.onload = function () {
   var genCpyInput = document.getElementById(genCPY);
   var genTsInput = document.getElementById(genTS);
 
-  genJsonInput.checked = localStorage.getItem(genJson) == 'true';
-  genCpyInput.checked = localStorage.getItem(genCPY) == 'true';
-  genTsInput.checked = localStorage.getItem(genTS) == 'true';
+  genJsonInput.checked = localStorage.getItem(genJson) == "true";
+  genCpyInput.checked = localStorage.getItem(genCPY) == "true";
+  genTsInput.checked = localStorage.getItem(genTS) == "true";
 
   genJsonInput.addEventListener("change", function () {
     localStorage.setItem(genJson, this.checked);
-  })
+  });
   genCpyInput.addEventListener("change", function () {
     localStorage.setItem(genCPY, this.checked);
-  })
+  });
   genTsInput.addEventListener("change", function () {
     localStorage.setItem(genTS, this.checked);
-  })
+  });
 };
 
 function copyCode() {
@@ -53,22 +35,23 @@ function copyCode() {
   }
 }
 
-const doConvert = debounce(function () {
+function doConvert() {
   var className = document.getElementById(classNameInput).value;
   let jsonString = document.getElementById(jsonInput).value;
   QuickType.runQuickType(className, jsonString, {
-    generateToString: localStorage.getItem(genTS) == 'true',
-    generateCopyWith: localStorage.getItem(genCPY) == 'true',
-    generateToJson: localStorage.getItem(genJson) == 'true',
+    generateToString: localStorage.getItem(genTS) == "true",
+    generateCopyWith: localStorage.getItem(genCPY) == "true",
+    generateToJson: localStorage.getItem(genJson) == "true",
   })
     .then((data) => {
       console.log(data);
       localStorage.setItem(classNameInput, className);
       localStorage.setItem(jsonInput, jsonString);
-      document.getElementById("output").innerHTML = data;
-      document.getElementById("output").value = data;
+      var output = document.getElementById("output");
+      output.innerHTML = data;
+      output.value = data;
     })
     .catch((err) => {
       alert(err);
     });
-}, 10);
+}
