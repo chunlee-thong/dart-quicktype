@@ -2,6 +2,8 @@
 
 A custom implemenation of JSON to Dart model class from [QuickType](https://github.com/quicktype/quicktype).
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f0148cf0-a1b5-4db5-89e9-936157b57e19/deploy-status)](https://app.netlify.com/sites/dart-quicktype/deploys)
+
 This project is configure to fit my use case only so the default behavior will be:
 
 - All fields are **final**
@@ -12,7 +14,6 @@ This project is configure to fit my use case only so the default behavior will b
 ## URL
 
 - Production: https://dart-quicktype.netlify.app/
-- Preview: https://deploy-preview-1--dart-quicktype.netlify.app/
 
 ## Folder
 
