@@ -8,19 +8,27 @@ body {
   margin: 0px;
   padding: 0px;
   font-family: "Source Sans Pro", monospace;
+  display: flex;
+  flex-direction: column;
 }
 
 #form {
   margin: 1vw 2vw;
+  flex-grow: 1
+}
+
+.row{
+  height: 100%;
 }
 
 .area {
   font-family: monospace;
+  flex-grow: 1;
 }
 
 #check-group {
   margin-top: 16px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .btn-primary {
