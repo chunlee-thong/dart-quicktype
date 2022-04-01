@@ -1,33 +1,36 @@
 {
-  "updated_at": "2021-05-21T05:08:24.244Z",
-  "created_at": "2021-05-14T08:45:24.246Z",
-  "deleted_at": null,
-  "id": 4,
-  "image": "a320596d-852d-48e6-8219-e5b170f15293.jpg",
-  "name": "Boxing / Martial Arts",
-  "time_in": "01:00:00",
-  "time_out": "07:00:00",
-  "day_of_week": "0,1,4,5,6,3",
-  "limit": 5,
-  "description": "<p class=\"ql-align-justify\"><span style=\"color: rgb(32, 33, 36);\">Boxing and Combat classes are designed for people that want to improve not just physical strength, but also flexibility and cardiovascular strength. </span></p><p class=\"ql-align-justify\"><span style=\"color: rgb(32, 33, 36);\">You don’t need to be a boxer or know martial arts, the classes are designed so anyone can participate and learn. No matter your skill level or size.&nbsp;</span></p>",
-  "kh_description": "null",
-  "active": true,
-  "instructor_id": 32,
-  "service_id": 32,
-  "service": null,
-  "count": 0,
-  "status": "available",
-  "join": [],
-  "date": "2012-02-27 13:27:00",
-  "age": 32,
-  "money": 23.5,
-  "sick": false,
-  "images": [
+  "val_int": 4,
+  "val_bool": true,
+  "val_date": "2021-05-21T05:08:24.244Z",
+  "val_string": "a320596d-852d-48e6-8219-e5b170f15293.jpg",
+  "val_null": null,
+  "val_double": 23.45,
+  "val_arr_int": [
+    123,
+    123,
+    123
+  ],
+  "val_arr_string": [
     "chunlee.jpg",
     "kappa.png"
   ],
-  "address": {
+  "val_obj": {
     "street": "9MC",
     "city": "PP"
-  }
+  },
+  "val_obj_in_obj": {
+    "street": "9MC",
+    "city": "PP",
+    "province": {
+      "country": "cambodia",
+      "populatom": "123"
+    }
+  },
+  "val_arr_obj": [
+    {
+      "dog": "9MC",
+      "cat": 123,
+      "hehe": false
+    }
+  ]
 }

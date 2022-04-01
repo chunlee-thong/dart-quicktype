@@ -269,15 +269,18 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
         ];
     }
     fromDynamicExpression(t, ...dynamic) {
-        return TypeUtils_1.matchType(t, (_anyType) => dynamic, (_nullType) => dynamic, // FIXME: check null
-        (_boolType) => dynamic, (_integerType) => dynamic, (_doubleType) => [dynamic], (_stringType) => dynamic, (arrayType) => this.mapList(this.dartType(arrayType.items), dynamic, this.fromDynamicExpression(arrayType.items, "x")), (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"], (mapType) => this.mapMap(this.dartType(mapType.values), dynamic, this.fromDynamicExpression(mapType.values, "v")), (enumType) => [Support_1.defined(this._enumValues.get(enumType)), ".map[", dynamic, "]"], (unionType) => {
+        return TypeUtils_1.matchType(t, (_anyType) => dynamic, (_nullType) => dynamic, (_boolType) => dynamic, (_integerType) => dynamic, (_doubleType) => [dynamic], (_stringType) => dynamic, (arrayType) => this.mapList(this.dartType(arrayType.items), dynamic, this.fromDynamicExpression(arrayType.items, "x")), (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"], (mapType) => this.mapMap(this.dartType(mapType.values), dynamic, this.fromDynamicExpression(mapType.values, "v")), (enumType) => [Support_1.defined(this._enumValues.get(enumType)), ".map[", dynamic, "]"], (unionType) => {
             const maybeNullable = TypeUtils_1.nullableFromUnion(unionType);
             if (maybeNullable === null) {
                 return dynamic;
             }
-            //TODO: remove null check
-            return [this.fromDynamicExpression(maybeNullable, dynamic)];
-            //return [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)];
+            const type = this.dartType(t, true);
+            let isAClass = false;
+            if (typeof type == 'object') {
+                let isArray = Array.isArray(type);
+                isAClass = !isArray && type["kind"] !== "annotated";
+            }
+            return isAClass ? [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)] : [this.fromDynamicExpression(maybeNullable, dynamic)];
         }, (transformedStringType) => {
             switch (transformedStringType.kind) {
                 case "date-time":
@@ -331,7 +334,6 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                 this.emitLine("});");
                 this.ensureBlankLine();
                 this.forEachClassProperty(c, "none", (name, jsonName, p) => {
-                    var _a;
                     const description = this.descriptionForClassProperty(c, jsonName);
                     if (description !== undefined) {
                         this.emitDescription(description);
@@ -343,10 +345,7 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
                         if (!isArray && type["kind"] === "annotated") {
                             letBeNull = false;
                         }
-                    }
-                    if (name["_unstyledNames"]) {
-                        const nameSet = (_a = name["_unstyledNames"]) !== null && _a !== void 0 ? _a : {};
-                        if (nameSet.has("_id") || nameSet.has("id")) {
+                        if (isArray) {
                             letBeNull = false;
                         }
                     }
@@ -383,9 +382,7 @@ class CustomDartRenderer extends ConvenienceRenderer_1.ConvenienceRenderer {
             });
             this.indent(() => {
                 this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-                    this.emitLine(name, ": ", 
-                    //TODO: add ? after json. json can be null because we remove null check
-                    this.fromDynamicExpression(property.type, 'json?["', stringEscape(jsonName), '"]'), ",");
+                    this.emitLine(name, ": ", this.fromDynamicExpression(property.type, 'json?["', stringEscape(jsonName), '"]'), ",");
                 });
             });
             this.emitLine(");");

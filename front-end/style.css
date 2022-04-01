@@ -1,3 +1,6 @@
+/* https://github.com/JetBrains/JetBrainsMono */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+
 html,
 body {
   height: 100%;
@@ -10,11 +13,22 @@ body {
   font-family: "Source Sans Pro", monospace;
   display: flex;
   flex-direction: column;
+
 }
 
 #form {
-  margin: 1vw 2vw;
-  flex-grow: 1
+  padding: 1vw 2vw;
+  flex-grow: 1;
+}
+
+#editor {
+  width: 100%;
+  height: 100%;
+}
+
+#editor-dart {
+  width: 100%;
+  height: 100%;
 }
 
 .row{
@@ -24,6 +38,14 @@ body {
 .area {
   font-family: monospace;
   flex-grow: 1;
+}
+
+h2{
+  color: white;
+}
+
+label{
+  color: white;
 }
 
 #check-group {

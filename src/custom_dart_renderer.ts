@@ -11,9 +11,9 @@ import {
   getOptionValues,
   Option,
   OptionValues,
-  StringOption,
+  StringOption
 } from "quicktype-core/dist/RendererOptions";
-import { maybeAnnotated, modifySource, Sourcelike } from "quicktype-core/dist/Source";
+import { maybeAnnotated, Sourcelike } from "quicktype-core/dist/Source";
 import {
   allLowerWordStyle,
   allUpperWordStyle,
@@ -27,7 +27,7 @@ import {
   splitIntoWords,
   standardUnicodeHexEscape,
   utf16ConcatMap,
-  utf16LegalizeCharacters,
+  utf16LegalizeCharacters
 } from "quicktype-core/dist/support/Strings";
 import { defined } from "quicktype-core/dist/support/Support";
 import { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
@@ -38,12 +38,12 @@ import {
   PrimitiveStringTypeKind,
   TransformedStringTypeKind,
   Type,
-  UnionType,
+  UnionType
 } from "quicktype-core/dist/Type";
 import {
   directlyReachableSingleNamedType,
   matchType,
-  nullableFromUnion,
+  nullableFromUnion
 } from "quicktype-core/dist/TypeUtils";
 import { CustomDartOption } from ".";
 
@@ -425,7 +425,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     return matchType<Sourcelike>(
       t,
       (_anyType) => dynamic,
-      (_nullType) => dynamic, // FIXME: check null
+      (_nullType) => dynamic,
       (_boolType) => dynamic,
       (_integerType) => dynamic,
       (_doubleType) => [dynamic],
@@ -449,9 +449,15 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         if (maybeNullable === null) {
           return dynamic;
         }
-        //TODO: remove null check
-        return [this.fromDynamicExpression(maybeNullable, dynamic)];
-        //return [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)];
+
+        const type = this.dartType(t, true);
+        let isAClass = false;
+        if (typeof type == 'object') {
+          let isArray = Array.isArray(type);
+          isAClass = !isArray && type["kind"] !== "annotated";
+        }
+
+        return isAClass ? [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)] : [this.fromDynamicExpression(maybeNullable, dynamic)];
       },
       (transformedStringType) => {
         switch (transformedStringType.kind) {
@@ -535,13 +541,11 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             if (!isArray && type["kind"] === "annotated") {
               letBeNull = false;
             }
-          }
-          if (name["_unstyledNames"]) {
-            const nameSet: Set<string> = name["_unstyledNames"] ?? {};
-            if (nameSet.has("_id") || nameSet.has("id")) {
+            if (isArray) {
               letBeNull = false;
             }
           }
+
           this.emitLine(
             this._options.finalProperties ? "final " : "",
             type,
@@ -594,7 +598,6 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine(
             name,
             ": ",
-            //TODO: add ? after json. json can be null because we remove null check
             this.fromDynamicExpression(property.type, 'json?["', stringEscape(jsonName), '"]'),
             ","
           );

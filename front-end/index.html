@@ -18,10 +18,14 @@
     gtag('js', new Date());
     gtag('config', 'G-BF74CBYZR1');
   </script>
+  </script>
+  <style type="text/css" media="screen">
+
+  </style>
 </head>
 
 <body>
-  <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <nav class="navbar navbar-dark navbar-expand-lg" style="background-color: #000000;">
     <div class="container-fluid">
       <a class="navbar-brand mb-0 h1" href="./">Dart QuickType</a>
     </div>
@@ -41,7 +45,7 @@
       </div>
     </div>
   </nav>
-  <div id="form">
+  <div id="form" class="bg-dark">
     <div class="row">
       <div class="col-sm d-flex flex-column">
         <h2>Class name</h2>
@@ -61,8 +65,9 @@
             <label for="gen-ts">Generate toString method</label>
           </div>
         </div>
-        <textarea type="area" class="flex-grow-1 area form-control" id="json-input"
-          placeholder="JSON String"></textarea>
+        <div id="editor"></div>
+        <!-- <textarea type="area" class="flex-grow-1 area form-control" id="json-input"
+          placeholder="JSON String"></textarea> -->
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
         <hr />
       </div>
@@ -70,12 +75,16 @@
       <!--  -->
       <div class="col-sm d-flex flex-column">
         <h2>Output</h2>
-        <textarea class="area form-control" id="output" readonly></textarea>
+        <div id="editor-dart"></div>
+        <!-- <textarea class="area form-control" id="output" readonly></textarea> -->
         <button type=" button" class="btn btn-primary" onclick="copyCode()">Copy Code</button>
         <hr />
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"
+    integrity="sha512-6ts6Fu561/yzWvD6uwQp3XVYwiWNpWnZ0hdeQrETqtnQiGjTfOS06W76aUDnq51hl1SxXtJaqy7IsZ3oP/uZEg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

@@ -9,6 +9,8 @@ This project is configure to fit my use case only so the default behavior will b
 - All fields are **final**
 - All fields are **nullable** and **required**
 - has an option to generate toJSON,copyWith and toString
+- **Nullable Array** fields will result in *empty array* instead of null object
+- 
 - No freezed or hive
 
 ## URL
