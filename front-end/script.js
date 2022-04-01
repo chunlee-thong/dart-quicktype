@@ -59,7 +59,6 @@ function doConvert() {
     generateToJson: localStorage.getItem(genJson) == "true",
   })
     .then((data) => {
-      console.log(data);
       localStorage.setItem(classNameInput, className);
       localStorage.setItem(jsonInput, jsonString);
       dartEditor.setValue(data, 1);
