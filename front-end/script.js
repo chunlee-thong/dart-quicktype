@@ -58,6 +58,14 @@ function copyCode() {
 function doConvert() {
   var className = document.getElementById(classNameInput).value;
   let jsonString = jsonEditor.getValue();
+  if (!className) {
+    alert("Please input class name");
+    return;
+  }
+  if (!jsonString) {
+    alert("Please input json string");
+    return;
+  }
   QuickType.runQuickType(className, jsonString, {
     generateToString: localStorage.getItem(genTS) == "true",
     generateCopyWith: localStorage.getItem(genCPY) == "true",
