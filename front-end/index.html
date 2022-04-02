@@ -7,17 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dart QuickType</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+    crossorigin="anonymous" />
   <script src="./app.js"></script>
   <script src="./script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF74CBYZR1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-BF74CBYZR1');
-  </script>
   </script>
   <style type="text/css" media="screen">
 
@@ -33,7 +35,8 @@
       <div class="navbar-nav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="https://github.com/chunlee-thong/dart-quicktype" target="_blank">Github</a>
+            <a class="nav-link" href="https://github.com/chunlee-thong/dart-quicktype"
+              target="_blank">Github</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://quicktype.io/" target="_blank">Quicktype</a>
@@ -47,6 +50,16 @@
   </nav>
   <div id="form" class="bg-dark">
     <div class="row">
+      <div class="col-2 d-flex flex-column history">
+        <h2>History</h2>
+        <div id="history">
+          <div class="list-group">
+            <button type="button" v-for="history in histories" v-on:click="onSelect(history)"
+              class="list-group-item  list-group-item-action">{{ history
+              }}</button>
+          </div>
+        </div>
+      </div>
       <div class="col-sm d-flex flex-column">
         <h2>Class name</h2>
         <input type="text" class="form-control" id="class-name" required />
@@ -65,7 +78,7 @@
             <label for="gen-ts">Generate toString method</label>
           </div>
         </div>
-        <div id="editor"></div>
+        <div id="json-editor" class="editor"></div>
         <!-- <textarea type="area" class="flex-grow-1 area form-control" id="json-input"
           placeholder="JSON String"></textarea> -->
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
@@ -75,7 +88,7 @@
       <!--  -->
       <div class="col-sm d-flex flex-column">
         <h2>Output</h2>
-        <div id="editor-dart"></div>
+        <div id="dart-editor" class="editor"></div>
         <!-- <textarea class="area form-control" id="output" readonly></textarea> -->
         <button type=" button" class="btn btn-primary" onclick="copyCode()">Copy Code</button>
         <hr />
@@ -84,7 +97,19 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"
     integrity="sha512-6ts6Fu561/yzWvD6uwQp3XVYwiWNpWnZ0hdeQrETqtnQiGjTfOS06W76aUDnq51hl1SxXtJaqy7IsZ3oP/uZEg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+  <script>
+    let history = localStorage.getItem("history");
+    history = JSON.parse(history || "{}");
+    console.log(history)
+    new Vue({
+      el: "#history",
+      data: {
+        histories: Object.keys(history).map((key) => key)
+      },
+    })
+  </script>
 </body>
 
 </html>

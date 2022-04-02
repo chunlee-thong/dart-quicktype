@@ -1,3 +1,7 @@
+## [2.1.0] - 1 April 2022
+
+- Add history
+
 ## [2.0.0] - 1 April 2022
 
 - Add null check to all class type

@@ -1,28 +1,33 @@
 const jsonInput = "json-input";
 const classNameInput = "class-name";
+//
 const genJson = "gen-json";
 const genCPY = "gen-cpy";
 const genTS = "gen-ts";
 
-
 var jsonEditor;
 var dartEditor;
-let theme = 'dracula';
-window.onload = function () {
-  jsonEditor = ace.edit("editor");
+let theme = "dracula";
+
+//
+window.onload = async function () {
+  jsonEditor = ace.edit("json-editor");
   jsonEditor.setTheme(`ace/theme/${theme}`);
   jsonEditor.session.setMode("ace/mode/json");
   //
-  dartEditor = ace.edit("editor-dart");
+  dartEditor = ace.edit("dart-editor");
   dartEditor.setTheme(`ace/theme/${theme}`);
   dartEditor.setReadOnly(true);
   dartEditor.session.setMode("ace/mode/dart");
-  dartEditor.setOptions({ fontFamily: 'Space Mono', fontSize: 14 })
+  dartEditor.setOptions({ fontFamily: "Space Mono", fontSize: 14 });
   //
-  jsonEditor.setValue(localStorage.getItem(jsonInput), 1)
-  // document.getElementById(jsonInput).value = ;
+  jsonEditor.setValue(localStorage.getItem(jsonInput), 1);
   document.getElementById(classNameInput).value = localStorage.getItem(classNameInput);
   //
+  initSetting();
+};
+
+function initSetting() {
   var genJsonInput = document.getElementById(genJson);
   var genCpyInput = document.getElementById(genCPY);
   var genTsInput = document.getElementById(genTS);
@@ -40,7 +45,7 @@ window.onload = function () {
   genTsInput.addEventListener("change", function () {
     localStorage.setItem(genTS, this.checked);
   });
-};
+}
 
 function copyCode() {
   const output = dartEditor.getValue();
@@ -52,18 +57,37 @@ function copyCode() {
 
 function doConvert() {
   var className = document.getElementById(classNameInput).value;
-  let jsonString = jsonEditor.getValue()
+  let jsonString = jsonEditor.getValue();
   QuickType.runQuickType(className, jsonString, {
     generateToString: localStorage.getItem(genTS) == "true",
     generateCopyWith: localStorage.getItem(genCPY) == "true",
     generateToJson: localStorage.getItem(genJson) == "true",
   })
-    .then((data) => {
+    .then((output) => {
       localStorage.setItem(classNameInput, className);
       localStorage.setItem(jsonInput, jsonString);
-      dartEditor.setValue(data, 1);
+      dartEditor.setValue(output, 1);
+      saveToHistory(className, jsonString);
     })
     .catch((err) => {
       alert(err);
     });
+}
+
+function getHistory() {
+  let history = localStorage.getItem("history");
+  return JSON.parse(history || "{}");
+}
+
+function saveToHistory(className, jsonString) {
+  let history = getHistory();
+  history[className] = { className, jsonString };
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+function onSelect(selected) {
+  let history = getHistory();
+  let data = history[selected];
+  jsonEditor.setValue(data.jsonString, 1);
+  document.getElementById(classNameInput).value = data.className;
 }
