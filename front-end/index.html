@@ -54,7 +54,7 @@
         <h2>History</h2>
         <div id="history">
           <div class="list-group">
-            <button type="button" v-for="history in histories" v-on:click="onSelect(history)"
+            <button type="button" v-for="history in histories" v-on:click="onSelectHistory(history)"
               class="list-group-item  list-group-item-action">{{ history
               }}</button>
           </div>
@@ -82,6 +82,7 @@
         <!-- <textarea type="area" class="flex-grow-1 area form-control" id="json-input"
           placeholder="JSON String"></textarea> -->
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
+        <button class="btn btn-primary input" onclick="testCreateHistory()">Test</button>
         <hr />
       </div>
 
@@ -106,7 +107,7 @@
     new Vue({
       el: "#history",
       data: {
-        histories: Object.keys(history).map((key) => key)
+        histories: Object.keys(history).map((key) => key).reverse()
       },
     })
   </script>

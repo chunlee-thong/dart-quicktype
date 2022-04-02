@@ -1,4 +1,9 @@
-## [2.1.0] - 1 April 2022
+## [2.1.1] - 2 April 2022
+
+- Sort history by newest
+- Limit history to only 20
+
+## [2.1.0] - 2 April 2022
 
 - Add history
 
