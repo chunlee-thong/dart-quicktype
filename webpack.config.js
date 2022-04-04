@@ -3,7 +3,7 @@ const webpack = require("webpack");
 module.exports = {
   entry: "./dist/index.js",
   output: {
-    filename: "../front-end/app.js",
+    filename: "../front-end/quicktype.js",
     library: "QuickType",
   },
   mode: "production",

@@ -1,3 +1,7 @@
+## [2.1.2] - 4 April 2022
+
+- History is now reactive (thanks to vuejs)
+
 ## [2.1.1] - 2 April 2022
 
 - Sort history by newest

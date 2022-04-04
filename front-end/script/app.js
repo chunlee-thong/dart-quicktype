@@ -82,9 +82,17 @@ function doConvert() {
     });
 }
 
+
 function getHistory() {
   let history = localStorage.getItem("history");
   return JSON.parse(history || "{}");
+}
+
+export function onSelectHistory(selected) {
+  let history = getHistory();
+  let data = history[selected];
+  jsonEditor.setValue(data.jsonString, 1);
+  document.getElementById(classNameInput).value = data.className;
 }
 
 function saveToHistory(className, jsonString) {
@@ -95,17 +103,16 @@ function saveToHistory(className, jsonString) {
   }
   history[className] = { className, jsonString };
   localStorage.setItem("history", JSON.stringify(history));
+  initHistory();
 }
 
-function onSelectHistory(selected) {
-  let history = getHistory();
-  let data = history[selected];
-  jsonEditor.setValue(data.jsonString, 1);
-  document.getElementById(classNameInput).value = data.className;
-}
+
+window.doConvert = doConvert;
+window.copyCode = copyCode;
 
 function testCreateHistory() {
   for (var i = 0; i < 19; i++) {
     saveToHistory(`M${i}`, `{"name":"Model${i}"}`);
   }
 }
+
