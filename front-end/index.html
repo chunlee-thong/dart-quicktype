@@ -5,7 +5,10 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dart QuickType</title>
+  <meta name="description"
+    content="Convert json to Dart model class with null safety support, Also support more feature such as History and setting." />
+
+  <title>Dart QuickType - Convert JSON to Dart</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous" />
@@ -50,11 +53,12 @@
       <div class="col-2 d-flex flex-column history">
         <h2>History</h2>
         <div id="history">
-
         </div>
       </div>
       <div class="col-sm d-flex flex-column">
-        <h2>Class name</h2>
+        <label for="class-name">
+          <h2>Class name</h2>
+        </label>
         <input type="text" class="form-control" id="class-name" required />
         <div id="check-group">
           <div class="form-check">
