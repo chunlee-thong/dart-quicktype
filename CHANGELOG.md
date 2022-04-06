@@ -1,3 +1,12 @@
+## [2.1.3] - 6 April 2022
+
+- int, String, double, bool, Array now is now non-null and has default value as following:
+    - **int**: *0*
+    - **String**: *""*
+    - **double**: *0*
+    - **bool**: *false*
+    - **Array**: []
+
 ## [2.1.2] - 4 April 2022
 
 - History is now reactive (thanks to vuejs)

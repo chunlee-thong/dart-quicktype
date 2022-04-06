@@ -452,12 +452,20 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
         const type = this.dartType(t, true);
         let isAClass = false;
+        let hasDefaultValue = !Array.isArray(type) && type !== "DateTime";
+        let defaultValue = null;
         if (typeof type == 'object') {
           let isArray = Array.isArray(type);
           isAClass = !isArray && type["kind"] !== "annotated";
         }
-
-        return isAClass ? [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)] : [this.fromDynamicExpression(maybeNullable, dynamic)];
+        if (hasDefaultValue) {
+          defaultValue = this.getDefaultValueForType(type);
+        }
+        return isAClass ?
+          [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)]
+          : hasDefaultValue ?
+            [this.fromDynamicExpression(maybeNullable, dynamic, ` ?? ${defaultValue}`)]
+            : [this.fromDynamicExpression(maybeNullable, dynamic)]
       },
       (transformedStringType) => {
         switch (transformedStringType.kind) {
@@ -469,6 +477,12 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         }
       }
     );
+  }
+
+  protected getDefaultValueForType(type): any {
+    switch (type) {
+      case "int": return 0; case "double": return parseFloat("0.0"); case "String": return `""`; case "bool": return false; default: ""
+    }
   }
 
   protected toDynamicExpression(t: Type, ...dynamic: Sourcelike[]): Sourcelike {
@@ -529,22 +543,19 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.emitLine("});");
         this.ensureBlankLine();
 
-        this.forEachClassProperty(c, "none", (name, jsonName, p) => {
+        this.forEachClassProperty(c, "none", (name, jsonName, property) => {
           const description = this.descriptionForClassProperty(c, jsonName);
           if (description !== undefined) {
             this.emitDescription(description);
           }
-          const type = this.dartType(p.type, true);
-          let letBeNull = true;
-          if (typeof type === "object") {
-            const isArray = Array.isArray(type);
-            if (!isArray && type["kind"] === "annotated") {
-              letBeNull = false;
-            }
-            if (isArray) {
-              letBeNull = false;
-            }
+          const type = this.dartType(property.type, true);
+          let letBeNull = false;
+          let isAClass = false;
+          if (typeof type == 'object') {
+            let isArray = Array.isArray(type);
+            isAClass = !isArray && type["kind"] !== "annotated";
           }
+          letBeNull = isAClass || type === "DateTime";
 
           this.emitLine(
             this._options.finalProperties ? "final " : "",
@@ -584,7 +595,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         ".",
         this.fromJson,
         //TODO: make this json nullable
-        "(Map<String, dynamic>? json){ ",
+        "(Map<String, dynamic> json){ ",
       );
       this.indent(() => {
         this.emitLine(
@@ -598,7 +609,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine(
             name,
             ": ",
-            this.fromDynamicExpression(property.type, 'json?["', stringEscape(jsonName), '"]'),
+            this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
             ","
           );
         });
@@ -680,32 +691,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected emitSourceStructure(): void {
     this.emitFileHeader();
-
     if (!this._options.justTypes && !this._options.codersInClass) {
-      // this.forEachTopLevel("leading-and-interposing", (t, name) => {
-      //   const { encoder, decoder } = defined(this._topLevelDependents.get(name));
-      //   this.emitLine(
-      //     this.dartType(t),
-      //     " ",
-      //     decoder,
-      //     "(String str) => ",
-      //     this.fromDynamicExpression(t, "json.decode(str)"),
-      //     ";"
-      //   );
-      //   this.ensureBlankLine();
-      //   this.emitLine(
-      //     "String ",
-      //     encoder,
-      //     "(",
-      //     this.dartType(t),
-      //     " data) => json.encode(",
-      //     this.toDynamicExpression(t, "data"),
-      //     ");"
-      //   );
-      // this.emitBlock(["String ", encoder, "(", this.dartType(t), " data)"], () => {
-      //     this.emitJsonEncoderBlock(t);
-      // });
-      //});
     }
 
     this.forEachNamedType(

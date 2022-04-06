@@ -10,6 +10,8 @@
     123,
     123
   ],
+  "value_arr_empty": [],
+  "value_obj_empty": {},
   "val_arr_string": [
     "chunlee.jpg",
     "kappa.png"
@@ -31,6 +33,9 @@
       "dog": "9MC",
       "cat": 123,
       "hehe": false
+    },
+    {
+      "test": ""
     }
   ]
 }
