@@ -35,23 +35,15 @@ input[type=checkbox]
   height: 100%;
 }
 
-.row{
-  height: 100%;
-}
-
-.history {
-  flex-shrink: 0;
+.list-group {
+  height: 90%;
+  overflow: scroll;
 }
 
 .list-group-item {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.area {
-  font-family: monospace;
-  flex-grow: 1;
 }
 
 h2 {
