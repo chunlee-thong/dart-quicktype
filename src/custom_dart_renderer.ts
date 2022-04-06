@@ -481,7 +481,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected getDefaultValueForType(type): any {
     switch (type) {
-      case "int": return 0; case "double": return parseFloat("0.0"); case "String": return `""`; case "bool": return false; default: ""
+      case "int": return 0; case "double": return `0.toDouble()`; case "String": return `""`; case "bool": return false; default: ""
     }
   }
 

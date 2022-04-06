@@ -36,7 +36,7 @@ class MyClass {
         valDate: json["val_date"] == null ? null : DateTime.parse(json["val_date"]),
         valString: json["val_string"] ?? "",
         valNull: json["val_null"],
-        valDouble: json["val_double"] ?? 0,
+        valDouble: json["val_double"] ?? 0.toDouble(),
         valArrInt: json["val_arr_int"] == null ? [] : List<int>.from(json["val_arr_int"]!.map((x) => x)),
         valueArrEmpty: json["value_arr_empty"] == null ? [] : List<dynamic>.from(json["value_arr_empty"]!.map((x) => x)),
         valueObjEmpty: json["value_obj_empty"] == null ? null : ValueObjEmpty.fromJson(json["value_obj_empty"]),
@@ -54,17 +54,20 @@ class ValArrObj {
         required this.dog,
         required this.cat,
         required this.hehe,
+        required this.test,
     });
 
     final String dog;
-    final int cat;
+    final double cat;
     final bool hehe;
+    final String test;
 
     factory ValArrObj.fromJson(Map<String, dynamic> json){ 
         return ValArrObj(
         dog: json["dog"] ?? "",
-        cat: json["cat"] ?? 0,
+        cat: json["cat"] ?? 0.toDouble(),
         hehe: json["hehe"] ?? false,
+        test: json["test"] ?? "",
     );
     }
 
@@ -112,16 +115,16 @@ class ValObjInObj {
 class Province {
     Province({
         required this.country,
-        required this.populatom,
+        required this.population,
     });
 
     final String country;
-    final String populatom;
+    final double population;
 
     factory Province.fromJson(Map<String, dynamic> json){ 
         return Province(
         country: json["country"] ?? "",
-        populatom: json["populatom"] ?? "",
+        population: json["population"] ?? 0.toDouble(),
     );
     }
 
