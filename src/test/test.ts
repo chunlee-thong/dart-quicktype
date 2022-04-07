@@ -7,6 +7,7 @@ async function test() {
     generateToString: false,
     generateCopyWith: false,
     generateToJson: false,
+    useDefaultValue: true,
   });
   fs.writeFileSync("output.dart", result);
 }

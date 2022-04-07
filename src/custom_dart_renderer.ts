@@ -452,7 +452,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
         const type = this.dartType(t, true);
         let isAClass = false;
-        let hasDefaultValue = !Array.isArray(type) && type !== "DateTime";
+        let hasDefaultValue = !Array.isArray(type) && type !== "DateTime" && this.customDartOption.useDefaultValue;
         let defaultValue = null;
         if (typeof type == 'object') {
           let isArray = Array.isArray(type);
@@ -549,13 +549,20 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             this.emitDescription(description);
           }
           const type = this.dartType(property.type, true);
+          //
+          const isDynamic = typeof type == 'object' && type["kind"] === "annotated";
+          const isAClass = typeof type == 'object';
+          const isDateTime = type == 'DateTime';
+          const isArray = Array.isArray(type);
+
           let letBeNull = false;
-          let isAClass = false;
-          if (typeof type == 'object') {
-            let isArray = Array.isArray(type);
-            isAClass = !isArray && type["kind"] !== "annotated";
+          if (isDynamic || isArray) {
+            letBeNull = false;
+          } else if (isAClass || isDateTime) {
+            letBeNull = true;
+          } else {
+            letBeNull = this.customDartOption.useDefaultValue == false;
           }
-          letBeNull = isAClass || type === "DateTime";
 
           this.emitLine(
             this._options.finalProperties ? "final " : "",

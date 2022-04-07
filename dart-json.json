@@ -25,7 +25,10 @@
     "city": "PP",
     "province": {
       "country": "cambodia",
-      "population": 16.7
+      "population": 16.7,
+      "something": [
+        "hello"
+      ]
     }
   },
   "val_arr_obj": [

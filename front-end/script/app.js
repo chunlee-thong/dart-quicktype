@@ -4,6 +4,7 @@ const classNameInput = "class-name";
 const genJson = "gen-json";
 const genCPY = "gen-cpy";
 const genTS = "gen-ts";
+const useDefaultValue = "use-default-value";
 
 var jsonEditor;
 var dartEditor;
@@ -31,10 +32,12 @@ function initSetting() {
   var genJsonInput = document.getElementById(genJson);
   var genCpyInput = document.getElementById(genCPY);
   var genTsInput = document.getElementById(genTS);
+  var useDefaultValueInput = document.getElementById(useDefaultValue);
 
   genJsonInput.checked = localStorage.getItem(genJson) == "true";
   genCpyInput.checked = localStorage.getItem(genCPY) == "true";
   genTsInput.checked = localStorage.getItem(genTS) == "true";
+  useDefaultValueInput.checked = localStorage.getItem(useDefaultValue) == "true";
 
   genJsonInput.addEventListener("change", function () {
     localStorage.setItem(genJson, this.checked);
@@ -44,6 +47,9 @@ function initSetting() {
   });
   genTsInput.addEventListener("change", function () {
     localStorage.setItem(genTS, this.checked);
+  });
+  useDefaultValueInput.addEventListener("change", function () {
+    localStorage.setItem(useDefaultValue, this.checked);
   });
 }
 
@@ -70,6 +76,7 @@ function doConvert() {
     generateToString: localStorage.getItem(genTS) == "true",
     generateCopyWith: localStorage.getItem(genCPY) == "true",
     generateToJson: localStorage.getItem(genJson) == "true",
+    useDefaultValue: localStorage.getItem(useDefaultValue) == "true",
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);

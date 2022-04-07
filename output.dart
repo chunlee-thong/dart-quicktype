@@ -116,15 +116,18 @@ class Province {
     Province({
         required this.country,
         required this.population,
+        required this.something,
     });
 
     final String country;
     final double population;
+    final List<String> something;
 
     factory Province.fromJson(Map<String, dynamic> json){ 
         return Province(
         country: json["country"] ?? "",
         population: json["population"] ?? 0.toDouble(),
+        something: json["something"] == null ? [] : List<String>.from(json["something"]!.map((x) => x)),
     );
     }
 

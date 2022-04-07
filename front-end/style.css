@@ -46,12 +46,13 @@ input[type=checkbox]
   white-space: nowrap;
 }
 
-h2 {
+h2, label {
   color: white;
 }
 
-label {
-  color: white;
+p {
+  color: grey;
+  font-size: 12px;
 }
 
 #check-group {
