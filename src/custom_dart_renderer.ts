@@ -405,7 +405,10 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     );
   }
 
-  protected mapList(itemType: Sourcelike, list: Sourcelike, mapper: Sourcelike): Sourcelike {
+  protected mapList(itemType: Sourcelike, list: Sourcelike, mapper: Sourcelike, toJson: boolean): Sourcelike {
+    if (toJson) {
+      return ["List<", itemType, ">.from(", list, ".map((x) => ", mapper, "))"];
+    }
     return [list, " == null ? [] : ", "List<", itemType, ">.from(", list, "!.map((x) => ", mapper, "))"];
   }
 
@@ -434,7 +437,8 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.mapList(
           this.dartType(arrayType.items),
           dynamic,
-          this.fromDynamicExpression(arrayType.items, "x")
+          this.fromDynamicExpression(arrayType.items, "x"),
+          false,
         ),
       (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"],
       (mapType) =>
@@ -495,7 +499,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       (_doubleType) => dynamic,
       (_stringType) => dynamic,
       (arrayType) =>
-        this.mapList("dynamic", dynamic, this.toDynamicExpression(arrayType.items, "x")),
+        this.mapList(this.dartType(arrayType.items), dynamic, this.toDynamicExpression(arrayType.items, "x"), true),
       (_classType) => [dynamic, "?.", this.toJson, "()"],
       (mapType) => this.mapMap("dynamic", dynamic, this.toDynamicExpression(mapType.values, "v")),
       (enumType) => [defined(this._enumValues.get(enumType)), ".reverse[", dynamic, "]"],

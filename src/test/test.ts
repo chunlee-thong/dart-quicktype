@@ -4,9 +4,9 @@ import { runQuickType } from "../index";
 async function test() {
   const jsonString = await fs.readFileSync("dart-json.json", "utf8");
   const result = await runQuickType("MyClass", jsonString, {
-    generateToString: false,
+    generateToString: true,
     generateCopyWith: false,
-    generateToJson: false,
+    generateToJson: true,
     useDefaultValue: true,
   });
   fs.writeFileSync("output.dart", result);
