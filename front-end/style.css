@@ -35,6 +35,10 @@ input[type=checkbox]
   height: 100%;
 }
 
+.row{
+  height: 100%;
+}
+
 .list-group {
   height: 90%;
   overflow: scroll;

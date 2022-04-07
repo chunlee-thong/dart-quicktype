@@ -22,7 +22,7 @@ window.onload = async function () {
   dartEditor.session.setMode("ace/mode/dart");
   dartEditor.setOptions({ fontFamily: "Space Mono", fontSize: 14 });
   //
-  jsonEditor.setValue(localStorage.getItem(jsonInput), 1);
+  jsonEditor.setValue(localStorage.getItem(jsonInput) || "", 1);
   document.getElementById(classNameInput).value = localStorage.getItem(classNameInput);
   //
   initSetting();
@@ -89,7 +89,6 @@ function doConvert() {
     });
 }
 
-
 function getHistory() {
   let history = localStorage.getItem("history");
   return JSON.parse(history || "{}");
@@ -113,7 +112,6 @@ function saveToHistory(className, jsonString) {
   initHistory();
 }
 
-
 window.doConvert = doConvert;
 window.copyCode = copyCode;
 
@@ -122,4 +120,3 @@ function testCreateHistory() {
     saveToHistory(`M${i}`, `{"name":"Model${i}"}`);
   }
 }
-
