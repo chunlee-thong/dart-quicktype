@@ -62,6 +62,10 @@
         <input type="text" class="form-control" id="class-name" required />
         <div id="check-group">
           <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="use-serializable">
+            <label for="use-default-value">Use JsonSerializable</label>
+          </div>
+          <div class="form-check">
             <label for="gen-json">Generate toJSON method</label>
             <input class="form-check-input" type="checkbox" id="gen-json">
           </div>
@@ -79,6 +83,7 @@
             <label for="use-default-value">Use default value</label>
             <p>int, double, bool, String won't be null and replace with default value</p>
           </div>
+
         </div>
         <div id="json-editor" class="editor"></div>
         <!-- <textarea type="area" class="flex-grow-1 area form-control" id="json-input"

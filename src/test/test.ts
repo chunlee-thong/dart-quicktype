@@ -8,8 +8,19 @@ async function test() {
     generateCopyWith: false,
     generateToJson: true,
     useDefaultValue: true,
+    useSerializable: false
   });
   fs.writeFileSync("output.dart", result);
+
+  const result2 = await runQuickType("MyClass", jsonString, {
+    generateToString: true,
+    generateCopyWith: false,
+    generateToJson: true,
+    useDefaultValue: true,
+    useSerializable: true
+  });
+  fs.writeFileSync("output_serialization.dart", result);
+
 }
 
 test();
