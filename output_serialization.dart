@@ -21,34 +21,34 @@ class MyClass {
     });
 
     @JsonKey(name: 'val_int') 
-    final int valInt;
+    final int? valInt;
 
     @JsonKey(name: 'val_bool') 
-    final bool valBool;
+    final bool? valBool;
 
     @JsonKey(name: 'val_date') 
     final DateTime? valDate;
 
     @JsonKey(name: 'val_string') 
-    final String valString;
+    final String? valString;
 
     @JsonKey(name: 'val_null') 
     final dynamic valNull;
 
     @JsonKey(name: 'val_double') 
-    final double valDouble;
+    final double? valDouble;
 
     @JsonKey(name: 'val_arr_int') 
-    final List<int> valArrInt;
+    final List<int>? valArrInt;
 
     @JsonKey(name: 'value_arr_empty') 
-    final List<dynamic> valueArrEmpty;
+    final List<dynamic>? valueArrEmpty;
 
     @JsonKey(name: 'value_obj_empty') 
     final ValueObjEmpty? valueObjEmpty;
 
     @JsonKey(name: 'val_arr_string') 
-    final List<String> valArrString;
+    final List<String>? valArrString;
 
     @JsonKey(name: 'val_obj') 
     final ValObj? valObj;
@@ -57,7 +57,7 @@ class MyClass {
     final ValObjInObj? valObjInObj;
 
     @JsonKey(name: 'val_arr_obj') 
-    final List<ValArrObj> valArrObj;
+    final List<ValArrObj>? valArrObj;
 
     factory MyClass.fromJson(Map<String, dynamic> json) => _$MyClassFromJson(json);
 
@@ -79,16 +79,16 @@ class ValArrObj {
     });
 
     @JsonKey(name: 'dog') 
-    final String dog;
+    final String? dog;
 
     @JsonKey(name: 'cat') 
-    final double cat;
+    final double? cat;
 
     @JsonKey(name: 'hehe') 
-    final bool hehe;
+    final bool? hehe;
 
     @JsonKey(name: 'test') 
-    final String test;
+    final String? test;
 
     factory ValArrObj.fromJson(Map<String, dynamic> json) => _$ValArrObjFromJson(json);
 
@@ -108,10 +108,10 @@ class ValObj {
     });
 
     @JsonKey(name: 'street') 
-    final String street;
+    final String? street;
 
     @JsonKey(name: 'city') 
-    final String city;
+    final String? city;
 
     factory ValObj.fromJson(Map<String, dynamic> json) => _$ValObjFromJson(json);
 
@@ -132,10 +132,10 @@ class ValObjInObj {
     });
 
     @JsonKey(name: 'street') 
-    final String street;
+    final String? street;
 
     @JsonKey(name: 'city') 
-    final String city;
+    final String? city;
 
     @JsonKey(name: 'province') 
     final Province? province;
@@ -159,13 +159,13 @@ class Province {
     });
 
     @JsonKey(name: 'country') 
-    final String country;
+    final String? country;
 
     @JsonKey(name: 'population') 
-    final double population;
+    final double? population;
 
     @JsonKey(name: 'something') 
-    final List<String> something;
+    final List<String>? something;
 
     factory Province.fromJson(Map<String, dynamic> json) => _$ProvinceFromJson(json);
 

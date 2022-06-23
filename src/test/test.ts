@@ -7,7 +7,7 @@ async function test() {
     generateToString: true,
     generateCopyWith: false,
     generateToJson: true,
-    useDefaultValue: true,
+    useDefaultValue: false,
     useSerializable: false
   });
   fs.writeFileSync("output.dart", result);
@@ -16,7 +16,7 @@ async function test() {
     generateToString: true,
     generateCopyWith: false,
     generateToJson: true,
-    useDefaultValue: true,
+    useDefaultValue: false,
     useSerializable: true
   });
   fs.writeFileSync("output_serialization.dart", result2);

@@ -567,7 +567,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           const isArray = Array.isArray(type);
 
           let letBeNull = false;
-          if (isDynamic || isArray) {
+          if (isDynamic || (!this.customDartOption.useSerializable && isArray)) {
             letBeNull = false;
           } else if (isAClass || isDateTime) {
             letBeNull = true;

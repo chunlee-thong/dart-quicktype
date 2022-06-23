@@ -16,22 +16,22 @@ class MyClass {
     });
 
     @JsonKey(name: 'val_int') 
-    final int valInt;
+    final int? valInt;
 
     @JsonKey(name: 'val_bool') 
-    final bool valBool;
+    final bool? valBool;
 
     @JsonKey(name: 'val_date') 
     final DateTime? valDate;
 
     @JsonKey(name: 'val_string') 
-    final String valString;
+    final String? valString;
 
     @JsonKey(name: 'val_null') 
     final dynamic valNull;
 
     @JsonKey(name: 'val_double') 
-    final double valDouble;
+    final double? valDouble;
 
     @JsonKey(name: 'val_arr_int') 
     final List<int> valArrInt;
@@ -56,12 +56,12 @@ class MyClass {
 
     factory MyClass.fromJson(Map<String, dynamic> json){ 
         return MyClass(
-        valInt: json["val_int"] ?? 0,
-        valBool: json["val_bool"] ?? false,
+        valInt: json["val_int"],
+        valBool: json["val_bool"],
         valDate: json["val_date"] == null ? null : DateTime.parse(json["val_date"]),
-        valString: json["val_string"] ?? "",
+        valString: json["val_string"],
         valNull: json["val_null"],
-        valDouble: json["val_double"] ?? 0.toDouble(),
+        valDouble: json["val_double"],
         valArrInt: json["val_arr_int"] == null ? [] : List<int>.from(json["val_arr_int"]!.map((x) => x)),
         valueArrEmpty: json["value_arr_empty"] == null ? [] : List<dynamic>.from(json["value_arr_empty"]!.map((x) => x)),
         valueObjEmpty: json["value_obj_empty"] == null ? null : ValueObjEmpty.fromJson(json["value_obj_empty"]),
@@ -103,23 +103,23 @@ class ValArrObj {
     });
 
     @JsonKey(name: 'dog') 
-    final String dog;
+    final String? dog;
 
     @JsonKey(name: 'cat') 
-    final double cat;
+    final double? cat;
 
     @JsonKey(name: 'hehe') 
-    final bool hehe;
+    final bool? hehe;
 
     @JsonKey(name: 'test') 
-    final String test;
+    final String? test;
 
     factory ValArrObj.fromJson(Map<String, dynamic> json){ 
         return ValArrObj(
-        dog: json["dog"] ?? "",
-        cat: json["cat"] ?? 0.toDouble(),
-        hehe: json["hehe"] ?? false,
-        test: json["test"] ?? "",
+        dog: json["dog"],
+        cat: json["cat"],
+        hehe: json["hehe"],
+        test: json["test"],
     );
     }
 
@@ -143,15 +143,15 @@ class ValObj {
     });
 
     @JsonKey(name: 'street') 
-    final String street;
+    final String? street;
 
     @JsonKey(name: 'city') 
-    final String city;
+    final String? city;
 
     factory ValObj.fromJson(Map<String, dynamic> json){ 
         return ValObj(
-        street: json["street"] ?? "",
-        city: json["city"] ?? "",
+        street: json["street"],
+        city: json["city"],
     );
     }
 
@@ -174,18 +174,18 @@ class ValObjInObj {
     });
 
     @JsonKey(name: 'street') 
-    final String street;
+    final String? street;
 
     @JsonKey(name: 'city') 
-    final String city;
+    final String? city;
 
     @JsonKey(name: 'province') 
     final Province? province;
 
     factory ValObjInObj.fromJson(Map<String, dynamic> json){ 
         return ValObjInObj(
-        street: json["street"] ?? "",
-        city: json["city"] ?? "",
+        street: json["street"],
+        city: json["city"],
         province: json["province"] == null ? null : Province.fromJson(json["province"]),
     );
     }
@@ -210,18 +210,18 @@ class Province {
     });
 
     @JsonKey(name: 'country') 
-    final String country;
+    final String? country;
 
     @JsonKey(name: 'population') 
-    final double population;
+    final double? population;
 
     @JsonKey(name: 'something') 
     final List<String> something;
 
     factory Province.fromJson(Map<String, dynamic> json){ 
         return Province(
-        country: json["country"] ?? "",
-        population: json["population"] ?? 0.toDouble(),
+        country: json["country"],
+        population: json["population"],
         something: json["something"] == null ? [] : List<String>.from(json["something"]!.map((x) => x)),
     );
     }
