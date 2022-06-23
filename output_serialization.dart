@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'filename.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class MyClass {
     MyClass({
         required this.valInt,
@@ -66,10 +66,9 @@ class MyClass {
     return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
     }
 
-    Map<String, dynamic> toJson() => _$MyClassToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ValArrObj {
     ValArrObj({
         required this.dog,
@@ -97,10 +96,9 @@ class ValArrObj {
     return '$dog, $cat, $hehe, $test';
     }
 
-    Map<String, dynamic> toJson() => _$ValArrObjToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ValObj {
     ValObj({
         required this.street,
@@ -120,10 +118,9 @@ class ValObj {
     return '$street, $city';
     }
 
-    Map<String, dynamic> toJson() => _$ValObjToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ValObjInObj {
     ValObjInObj({
         required this.street,
@@ -147,10 +144,9 @@ class ValObjInObj {
     return '$street, $city, $province';
     }
 
-    Map<String, dynamic> toJson() => _$ValObjInObjToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class Province {
     Province({
         required this.country,
@@ -174,10 +170,9 @@ class Province {
     return '$country, $population, $something';
     }
 
-    Map<String, dynamic> toJson() => _$ProvinceToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ValueObjEmpty {
     ValueObjEmpty();
 
@@ -188,5 +183,4 @@ class ValueObjEmpty {
     return '';
     }
 
-    Map<String, dynamic> toJson() => _$ValueObjEmptyToJson(this);
 }

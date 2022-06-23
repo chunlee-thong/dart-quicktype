@@ -77,21 +77,6 @@ class MyClass {
     return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
     }
 
-    Map<String, dynamic> toJson() => {
-        "val_int": valInt,
-        "val_bool": valBool,
-        "val_date": valDate?.toIso8601String(),
-        "val_string": valString,
-        "val_null": valNull,
-        "val_double": valDouble,
-        "val_arr_int": List<int>.from(valArrInt.map((x) => x)),
-        "value_arr_empty": List<dynamic>.from(valueArrEmpty.map((x) => x)),
-        "value_obj_empty": valueObjEmpty?.toJson(),
-        "val_arr_string": List<String>.from(valArrString.map((x) => x)),
-        "val_obj": valObj?.toJson(),
-        "val_obj_in_obj": valObjInObj?.toJson(),
-        "val_arr_obj": List<ValArrObj>.from(valArrObj.map((x) => x?.toJson())),
-    };
 }
 
 class ValArrObj {
@@ -128,12 +113,6 @@ class ValArrObj {
     return '$dog, $cat, $hehe, $test';
     }
 
-    Map<String, dynamic> toJson() => {
-        "dog": dog,
-        "cat": cat,
-        "hehe": hehe,
-        "test": test,
-    };
 }
 
 class ValObj {
@@ -160,10 +139,6 @@ class ValObj {
     return '$street, $city';
     }
 
-    Map<String, dynamic> toJson() => {
-        "street": street,
-        "city": city,
-    };
 }
 
 class ValObjInObj {
@@ -195,11 +170,6 @@ class ValObjInObj {
     return '$street, $city, $province';
     }
 
-    Map<String, dynamic> toJson() => {
-        "street": street,
-        "city": city,
-        "province": province?.toJson(),
-    };
 }
 
 class Province {
@@ -231,11 +201,6 @@ class Province {
     return '$country, $population, $something';
     }
 
-    Map<String, dynamic> toJson() => {
-        "country": country,
-        "population": population,
-        "something": List<String>.from(something.map((x) => x)),
-    };
 }
 
 class ValueObjEmpty {
@@ -251,6 +216,4 @@ class ValueObjEmpty {
     return '';
     }
 
-    Map<String, dynamic> toJson() => {
-    };
 }

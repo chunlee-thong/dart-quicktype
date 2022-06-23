@@ -6,7 +6,7 @@ async function test() {
   const result = await runQuickType("MyClass", jsonString, {
     generateToString: true,
     generateCopyWith: false,
-    generateToJson: true,
+    generateToJson: false,
     useDefaultValue: false,
     useSerializable: false
   });
@@ -15,7 +15,7 @@ async function test() {
   const result2 = await runQuickType("MyClass", jsonString, {
     generateToString: true,
     generateCopyWith: false,
-    generateToJson: true,
+    generateToJson: false,
     useDefaultValue: false,
     useSerializable: true
   });

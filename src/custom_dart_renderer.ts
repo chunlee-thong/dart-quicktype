@@ -536,7 +536,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.emitDescription(this.descriptionForType(c));
 
     if(this.customDartOption.useSerializable){
-      this.emitLine("@JsonSerializable()")
+      this.emitLine("@JsonSerializable(", !this.customDartOption.generateToJson ? "createToJson: false" : "",")")
     }
 
     this.emitBlock(["class ", className], () => {
