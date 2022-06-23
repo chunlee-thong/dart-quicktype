@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'filename.g.dart';
+
+@JsonSerializable()
 class MyClass {
     MyClass({
         required this.valInt,
@@ -29,46 +34,17 @@ class MyClass {
     final ValObjInObj? valObjInObj;
     final List<ValArrObj> valArrObj;
 
-    factory MyClass.fromJson(Map<String, dynamic> json){ 
-        return MyClass(
-        valInt: json["val_int"] ?? 0,
-        valBool: json["val_bool"] ?? false,
-        valDate: json["val_date"] == null ? null : DateTime.parse(json["val_date"]),
-        valString: json["val_string"] ?? "",
-        valNull: json["val_null"],
-        valDouble: json["val_double"] ?? 0.toDouble(),
-        valArrInt: json["val_arr_int"] == null ? [] : List<int>.from(json["val_arr_int"]!.map((x) => x)),
-        valueArrEmpty: json["value_arr_empty"] == null ? [] : List<dynamic>.from(json["value_arr_empty"]!.map((x) => x)),
-        valueObjEmpty: json["value_obj_empty"] == null ? null : ValueObjEmpty.fromJson(json["value_obj_empty"]),
-        valArrString: json["val_arr_string"] == null ? [] : List<String>.from(json["val_arr_string"]!.map((x) => x)),
-        valObj: json["val_obj"] == null ? null : ValObj.fromJson(json["val_obj"]),
-        valObjInObj: json["val_obj_in_obj"] == null ? null : ValObjInObj.fromJson(json["val_obj_in_obj"]),
-        valArrObj: json["val_arr_obj"] == null ? [] : List<ValArrObj>.from(json["val_arr_obj"]!.map((x) => ValArrObj.fromJson(x))),
-    );
-    }
+    factory MyClass.fromJson(Map<String, dynamic> json) => _$MyClassFromJson(json);
 
     @override
     String toString(){
     return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
     }
 
-    Map<String, dynamic> toJson() => {
-        "val_int": valInt,
-        "val_bool": valBool,
-        "val_date": valDate?.toIso8601String(),
-        "val_string": valString,
-        "val_null": valNull,
-        "val_double": valDouble,
-        "val_arr_int": List<int>.from(valArrInt.map((x) => x)),
-        "value_arr_empty": List<dynamic>.from(valueArrEmpty.map((x) => x)),
-        "value_obj_empty": valueObjEmpty?.toJson(),
-        "val_arr_string": List<String>.from(valArrString.map((x) => x)),
-        "val_obj": valObj?.toJson(),
-        "val_obj_in_obj": valObjInObj?.toJson(),
-        "val_arr_obj": List<ValArrObj>.from(valArrObj.map((x) => x?.toJson())),
-    };
+    Map<String, dynamic> toJson() => _$MyClassToJson(this);
 }
 
+@JsonSerializable()
 class ValArrObj {
     ValArrObj({
         required this.dog,
@@ -82,28 +58,17 @@ class ValArrObj {
     final bool hehe;
     final String test;
 
-    factory ValArrObj.fromJson(Map<String, dynamic> json){ 
-        return ValArrObj(
-        dog: json["dog"] ?? "",
-        cat: json["cat"] ?? 0.toDouble(),
-        hehe: json["hehe"] ?? false,
-        test: json["test"] ?? "",
-    );
-    }
+    factory ValArrObj.fromJson(Map<String, dynamic> json) => _$ValArrObjFromJson(json);
 
     @override
     String toString(){
     return '$dog, $cat, $hehe, $test';
     }
 
-    Map<String, dynamic> toJson() => {
-        "dog": dog,
-        "cat": cat,
-        "hehe": hehe,
-        "test": test,
-    };
+    Map<String, dynamic> toJson() => _$ValArrObjToJson(this);
 }
 
+@JsonSerializable()
 class ValObj {
     ValObj({
         required this.street,
@@ -113,24 +78,17 @@ class ValObj {
     final String street;
     final String city;
 
-    factory ValObj.fromJson(Map<String, dynamic> json){ 
-        return ValObj(
-        street: json["street"] ?? "",
-        city: json["city"] ?? "",
-    );
-    }
+    factory ValObj.fromJson(Map<String, dynamic> json) => _$ValObjFromJson(json);
 
     @override
     String toString(){
     return '$street, $city';
     }
 
-    Map<String, dynamic> toJson() => {
-        "street": street,
-        "city": city,
-    };
+    Map<String, dynamic> toJson() => _$ValObjToJson(this);
 }
 
+@JsonSerializable()
 class ValObjInObj {
     ValObjInObj({
         required this.street,
@@ -142,26 +100,17 @@ class ValObjInObj {
     final String city;
     final Province? province;
 
-    factory ValObjInObj.fromJson(Map<String, dynamic> json){ 
-        return ValObjInObj(
-        street: json["street"] ?? "",
-        city: json["city"] ?? "",
-        province: json["province"] == null ? null : Province.fromJson(json["province"]),
-    );
-    }
+    factory ValObjInObj.fromJson(Map<String, dynamic> json) => _$ValObjInObjFromJson(json);
 
     @override
     String toString(){
     return '$street, $city, $province';
     }
 
-    Map<String, dynamic> toJson() => {
-        "street": street,
-        "city": city,
-        "province": province?.toJson(),
-    };
+    Map<String, dynamic> toJson() => _$ValObjInObjToJson(this);
 }
 
+@JsonSerializable()
 class Province {
     Province({
         required this.country,
@@ -173,39 +122,26 @@ class Province {
     final double population;
     final List<String> something;
 
-    factory Province.fromJson(Map<String, dynamic> json){ 
-        return Province(
-        country: json["country"] ?? "",
-        population: json["population"] ?? 0.toDouble(),
-        something: json["something"] == null ? [] : List<String>.from(json["something"]!.map((x) => x)),
-    );
-    }
+    factory Province.fromJson(Map<String, dynamic> json) => _$ProvinceFromJson(json);
 
     @override
     String toString(){
     return '$country, $population, $something';
     }
 
-    Map<String, dynamic> toJson() => {
-        "country": country,
-        "population": population,
-        "something": List<String>.from(something.map((x) => x)),
-    };
+    Map<String, dynamic> toJson() => _$ProvinceToJson(this);
 }
 
+@JsonSerializable()
 class ValueObjEmpty {
     ValueObjEmpty();
 
-    factory ValueObjEmpty.fromJson(Map<String, dynamic> json){ 
-        return ValueObjEmpty(
-    );
-    }
+    factory ValueObjEmpty.fromJson(Map<String, dynamic> json) => _$ValueObjEmptyFromJson(json);
 
     @override
     String toString(){
     return '';
     }
 
-    Map<String, dynamic> toJson() => {
-    };
+    Map<String, dynamic> toJson() => _$ValueObjEmptyToJson(this);
 }

@@ -19,7 +19,7 @@ async function test() {
     useDefaultValue: true,
     useSerializable: true
   });
-  fs.writeFileSync("output_serialization.dart", result);
+  fs.writeFileSync("output_serialization.dart", result2);
 
 }
 
