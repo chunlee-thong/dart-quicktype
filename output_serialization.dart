@@ -77,16 +77,9 @@ class ValArrObj {
         required this.test,
     });
 
-    @JsonKey(name: 'dog') 
     final String? dog;
-
-    @JsonKey(name: 'cat') 
     final double? cat;
-
-    @JsonKey(name: 'hehe') 
     final bool? hehe;
-
-    @JsonKey(name: 'test') 
     final String? test;
 
     factory ValArrObj.fromJson(Map<String, dynamic> json) => _$ValArrObjFromJson(json);
@@ -105,10 +98,7 @@ class ValObj {
         required this.city,
     });
 
-    @JsonKey(name: 'street') 
     final String? street;
-
-    @JsonKey(name: 'city') 
     final String? city;
 
     factory ValObj.fromJson(Map<String, dynamic> json) => _$ValObjFromJson(json);
@@ -128,13 +118,8 @@ class ValObjInObj {
         required this.province,
     });
 
-    @JsonKey(name: 'street') 
     final String? street;
-
-    @JsonKey(name: 'city') 
     final String? city;
-
-    @JsonKey(name: 'province') 
     final Province? province;
 
     factory ValObjInObj.fromJson(Map<String, dynamic> json) => _$ValObjInObjFromJson(json);
@@ -154,13 +139,8 @@ class Province {
         required this.something,
     });
 
-    @JsonKey(name: 'country') 
     final String? country;
-
-    @JsonKey(name: 'population') 
     final double? population;
-
-    @JsonKey(name: 'something') 
     final List<String>? something;
 
     factory Province.fromJson(Map<String, dynamic> json) => _$ProvinceFromJson(json);

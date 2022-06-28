@@ -553,9 +553,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.ensureBlankLine();
 
         this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-          this.ensureBlankLine();
-          this.emitLine("@JsonKey(name: '",jsonName, "') ");
+
           const description = this.descriptionForClassProperty(c, jsonName);
+
+          if(this.customDartOption.useSerializable && jsonName !== name.namingFunction.nameStyle(jsonName)) {
+            this.ensureBlankLine();
+            this.emitLine("@JsonKey(name: '", jsonName, "') ");
+          }
+
           if (description !== undefined) {
             this.emitDescription(description);
           }
