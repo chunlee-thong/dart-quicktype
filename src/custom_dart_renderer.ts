@@ -60,7 +60,7 @@ export const dartOptions = {
     false
   ),
   useHive: new BooleanOption("use-hive", "Generate annotations for Hive type adapters", false),
-  partName: new StringOption("part-name", "Use this name in `part` directive", "NAME", ""),
+  partName: new StringOption("part-name", "Use this name in `part` directive", "NAME", "filename"),
 };
 
 // function snakeCase(str: string): string {
@@ -534,6 +534,11 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected emitClassDefinition(c: ClassType, className: Name): void {
     this.emitDescription(this.descriptionForType(c));
+
+    if(this.customDartOption.useSerializable){
+      this.emitLine("@JsonSerializable(", !this.customDartOption.generateToJson ? "createToJson: false" : "",")")
+    }
+
     this.emitBlock(["class ", className], () => {
       if (c.getProperties().size === 0) {
         this.emitLine(className, "();");
@@ -548,7 +553,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.ensureBlankLine();
 
         this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+
           const description = this.descriptionForClassProperty(c, jsonName);
+
+          if(this.customDartOption.useSerializable && jsonName !== name.namingFunction.nameStyle(jsonName)) {
+            this.ensureBlankLine();
+            this.emitLine("@JsonKey(name: '", jsonName, "') ");
+          }
+
           if (description !== undefined) {
             this.emitDescription(description);
           }
@@ -560,7 +572,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           const isArray = Array.isArray(type);
 
           let letBeNull = false;
-          if (isDynamic || isArray) {
+          if (isDynamic || (!this.customDartOption.useSerializable && isArray)) {
             letBeNull = false;
           } else if (isAClass || isDateTime) {
             letBeNull = true;
@@ -599,34 +611,51 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.ensureBlankLine();
         });
       }
-      this.ensureBlankLine();
-      this.emitLine(
-        "factory ",
-        className,
-        ".",
-        this.fromJson,
-        //TODO: make this json nullable
-        "(Map<String, dynamic> json){ ",
-      );
-      this.indent(() => {
+
+      if (this.customDartOption.useSerializable) {
+        this.ensureBlankLine();
         this.emitLine(
-          "return ",
-          className,
-          "("
+            "factory ",
+            className,
+            ".",
+            this.fromJson,
+            //TODO: make this json nullable
+            "(Map<String, dynamic> json) => _$" ,
+            className,
+            "FromJson(json);",
         );
-      })
-      this.indent(() => {
-        this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+      }else{
+        this.ensureBlankLine();
+        this.emitLine(
+            "factory ",
+            className,
+            ".",
+            this.fromJson,
+            //TODO: make this json nullable
+            "(Map<String, dynamic> json){ ",
+        );
+        this.indent(() => {
           this.emitLine(
-            name,
-            ": ",
-            this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
-            ","
+              "return ",
+              className,
+              "("
           );
+        })
+        this.indent(() => {
+          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+            this.emitLine(
+                name,
+                ": ",
+                this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
+                ","
+            );
+          });
         });
-      });
-      this.emitLine(");");
-      this.emitLine("}");
+        this.emitLine(");");
+        this.emitLine("}");
+      }
+
+
       //Generate toString method
       if (this.customDartOption.generateToString) {
         this.ensureBlankLine();
@@ -646,19 +675,31 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       this.ensureBlankLine();
 
       if (this.customDartOption.generateToJson) {
-        this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-            this.emitLine(
-              '"',
-              stringEscape(jsonName),
-              '": ',
-              this.toDynamicExpression(property.type, name),
-              ","
-            );
-          });
-        });
-        this.emitLine("};");
+       if(this.customDartOption.useSerializable){
+
+         this.ensureBlankLine();
+
+         this.emitLine("Map<String, dynamic> ",
+             this.toJson, "() => _$",
+             className,
+             "ToJson(this);",
+         );
+
+       }else{
+         this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
+         this.indent(() => {
+           this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+             this.emitLine(
+                 '"',
+                 stringEscape(jsonName),
+                 '": ',
+                 this.toDynamicExpression(property.type, name),
+                 ","
+             );
+           });
+         });
+         this.emitLine("};");
+       }
       }
     });
   }
@@ -704,6 +745,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.emitFileHeader();
     if (!this._options.justTypes && !this._options.codersInClass) {
     }
+
+    if(this.customDartOption.useSerializable){
+      this.emitLine("import 'package:json_annotation/json_annotation.dart';");
+      this.ensureBlankLine();
+      this.emitLine("part '", this._options.partName , ".g.dart';");//todo print part
+
+    }
+
 
     this.forEachNamedType(
       "leading-and-interposing",

@@ -5,6 +5,7 @@ const genJson = "gen-json";
 const genCPY = "gen-cpy";
 const genTS = "gen-ts";
 const useDefaultValue = "use-default-value";
+const useSerializable = "use-serializable";
 
 var jsonEditor;
 var dartEditor;
@@ -33,11 +34,14 @@ function initSetting() {
   var genCpyInput = document.getElementById(genCPY);
   var genTsInput = document.getElementById(genTS);
   var useDefaultValueInput = document.getElementById(useDefaultValue);
+  var useSerializableInput = document.getElementById(useSerializable);
 
   genJsonInput.checked = localStorage.getItem(genJson) == "true";
   genCpyInput.checked = localStorage.getItem(genCPY) == "true";
   genTsInput.checked = localStorage.getItem(genTS) == "true";
   useDefaultValueInput.checked = localStorage.getItem(useDefaultValue) == "true";
+  useSerializableInput.checked = localStorage.getItem(useSerializable) == "true";
+
 
   genJsonInput.addEventListener("change", function () {
     localStorage.setItem(genJson, this.checked);
@@ -51,6 +55,10 @@ function initSetting() {
   useDefaultValueInput.addEventListener("change", function () {
     localStorage.setItem(useDefaultValue, this.checked);
   });
+  useSerializableInput.addEventListener("change", function (){
+    localStorage.setItem(useSerializable, this.checked);
+  });
+
 }
 
 function copyCode() {
@@ -77,6 +85,7 @@ function doConvert() {
     generateCopyWith: localStorage.getItem(genCPY) == "true",
     generateToJson: localStorage.getItem(genJson) == "true",
     useDefaultValue: localStorage.getItem(useDefaultValue) == "true",
+    useSerializable: localStorage.getItem(useSerializable) == "true"
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);

@@ -8,6 +8,7 @@ export type CustomDartOption = {
   generateCopyWith: boolean,
   generateToJson: boolean,
   useDefaultValue: boolean,
+  useSerializable: boolean,
 }
 
 export async function runQuickType(className: string, jsonString: string, dartOptions: CustomDartOption): Promise<string> {
