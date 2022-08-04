@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { runQuickType } from "../src/index";
+import { runQuickType } from "../index";
 
 async function test() {
   const jsonString = await fs.readFileSync("dart-json.json", "utf8");

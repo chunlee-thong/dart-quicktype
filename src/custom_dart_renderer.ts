@@ -592,13 +592,17 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
       if (this.customDartOption.generateCopyWith) {
         this.ensureBlankLine();
-        this.emitLine(className, " copyWith({");
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+        if (c.getProperties().size === 0) {
+          this.emitLine(className, " copyWith(){");
+        } else {
+          this.emitLine(className, " copyWith({");
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, _, _p) => {
+              this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+            });
           });
-        });
-        this.emitLine("}) {");
+          this.emitLine("}) {");
+        }
         this.indent(() => {
           this.emitLine("return ", className, "(");
           this.indent(() => {
@@ -699,7 +703,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.emitLine("}");
       }
       //Generate Equatable Props
-      if (this.customDartOption.generateToString) {
+      if (this.customDartOption.useEquatable) {
         let data = '';
         this.ensureBlankLine();
         this.emitLine("@override");

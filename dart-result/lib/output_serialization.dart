@@ -67,10 +67,6 @@ class MyClass {
     String toString(){
     return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
     }
-
-    @override
-    List<Object?> get props => [
-    valInt, valBool, valDate, valString, valNull, valDouble, valArrInt, valueArrEmpty, valueObjEmpty, valArrString, valObj, valObjInObj, valArrObj, ];
 }
 
 @JsonSerializable()
@@ -95,10 +91,6 @@ class ValArrObj {
     String toString(){
     return '$dog, $cat, $hehe, $test';
     }
-
-    @override
-    List<Object?> get props => [
-    dog, cat, hehe, test, ];
 }
 
 @JsonSerializable()
@@ -119,10 +111,6 @@ class ValObj {
     String toString(){
     return '$street, $city';
     }
-
-    @override
-    List<Object?> get props => [
-    street, city, ];
 }
 
 @JsonSerializable()
@@ -145,10 +133,6 @@ class ValObjInObj {
     String toString(){
     return '$street, $city, $province';
     }
-
-    @override
-    List<Object?> get props => [
-    street, city, province, ];
 }
 
 @JsonSerializable()
@@ -171,10 +155,6 @@ class Province {
     String toString(){
     return '$country, $population, $something';
     }
-
-    @override
-    List<Object?> get props => [
-    country, population, something, ];
 }
 
 @JsonSerializable()
@@ -189,8 +169,4 @@ class ValueObjEmpty {
     String toString(){
     return '';
     }
-
-    @override
-    List<Object?> get props => [
-    ];
 }
