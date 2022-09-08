@@ -1,12 +1,12 @@
 {
   "name": "dart-quicktype",
-  "version": "2.1.4",
+  "version": "2.1.6",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc -p . && webpack",
-    "test": "ts-node src/test/test.ts"
+    "test": "ts-node src/test/main.ts"
   },
   "keywords": [],
   "author": "",

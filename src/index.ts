@@ -1,6 +1,5 @@
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { CustomDartTargetLanguage } from "./custom_dart_renderer";
-//import { DartTargetLanguage } from "./quick_type_dart";
 
 
 export type CustomDartOption = {
@@ -9,6 +8,7 @@ export type CustomDartOption = {
   generateToJson: boolean,
   useDefaultValue: boolean,
   useSerializable: boolean,
+  useEquatable: boolean,
 }
 
 export async function runQuickType(className: string, jsonString: string, dartOptions: CustomDartOption): Promise<string> {

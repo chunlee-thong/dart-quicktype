@@ -5,6 +5,7 @@ const genJson = "gen-json";
 const genCPY = "gen-cpy";
 const genTS = "gen-ts";
 const useDefaultValue = "use-default-value";
+const useEquatable = "use-equatable";
 const useSerializable = "use-serializable";
 
 var jsonEditor;
@@ -34,12 +35,14 @@ function initSetting() {
   var genCpyInput = document.getElementById(genCPY);
   var genTsInput = document.getElementById(genTS);
   var useDefaultValueInput = document.getElementById(useDefaultValue);
+  var useEquatableValueInput = document.getElementById(useEquatable);
   var useSerializableInput = document.getElementById(useSerializable);
 
   genJsonInput.checked = localStorage.getItem(genJson) == "true";
   genCpyInput.checked = localStorage.getItem(genCPY) == "true";
   genTsInput.checked = localStorage.getItem(genTS) == "true";
   useDefaultValueInput.checked = localStorage.getItem(useDefaultValue) == "true";
+  useEquatableValueInput.checked = localStorage.getItem(useEquatable) == "true";
   useSerializableInput.checked = localStorage.getItem(useSerializable) == "true";
 
 
@@ -55,7 +58,10 @@ function initSetting() {
   useDefaultValueInput.addEventListener("change", function () {
     localStorage.setItem(useDefaultValue, this.checked);
   });
-  useSerializableInput.addEventListener("change", function (){
+  useEquatableValueInput.addEventListener("change", function () {
+    localStorage.setItem(useEquatable, this.checked);
+  });
+  useSerializableInput.addEventListener("change", function () {
     localStorage.setItem(useSerializable, this.checked);
   });
 
@@ -85,6 +91,7 @@ function doConvert() {
     generateCopyWith: localStorage.getItem(genCPY) == "true",
     generateToJson: localStorage.getItem(genJson) == "true",
     useDefaultValue: localStorage.getItem(useDefaultValue) == "true",
+    useEquatable: localStorage.getItem(useEquatable) == "true",
     useSerializable: localStorage.getItem(useSerializable) == "true"
   })
     .then((output) => {

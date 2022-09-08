@@ -47,7 +47,7 @@ import {
 } from "quicktype-core/dist/TypeUtils";
 import { CustomDartOption } from ".";
 
-export const dartOptions = {
+export const quicktypeDartOptions = {
   justTypes: new BooleanOption("just-types", "Types only", false),
   codersInClass: new BooleanOption("coders-in-class", "Put encoder & decoder in Class", false),
   methodNamesWithMap: new BooleanOption("from-map", "Use method names fromMap() & toMap()", false),
@@ -78,15 +78,15 @@ export class CustomDartTargetLanguage extends TargetLanguage {
 
   protected getOptions(): Option<any>[] {
     return [
-      dartOptions.justTypes,
-      dartOptions.codersInClass,
-      dartOptions.methodNamesWithMap,
-      dartOptions.requiredProperties,
-      dartOptions.finalProperties,
-      dartOptions.generateCopyWith,
-      dartOptions.useFreezed,
-      dartOptions.useHive,
-      dartOptions.partName,
+      quicktypeDartOptions.justTypes,
+      quicktypeDartOptions.codersInClass,
+      quicktypeDartOptions.methodNamesWithMap,
+      quicktypeDartOptions.requiredProperties,
+      quicktypeDartOptions.finalProperties,
+      quicktypeDartOptions.generateCopyWith,
+      quicktypeDartOptions.useFreezed,
+      quicktypeDartOptions.useHive,
+      quicktypeDartOptions.partName,
     ];
   }
 
@@ -106,7 +106,7 @@ export class CustomDartTargetLanguage extends TargetLanguage {
     renderContext: RenderContext,
     untypedOptionValues: { [name: string]: any }
   ): DartRenderer {
-    const options = getOptionValues(dartOptions, untypedOptionValues);
+    const options = getOptionValues(quicktypeDartOptions, untypedOptionValues);
     return new CustomDartRenderer(this, renderContext, options, this.customDartOptions);
   }
 }
@@ -247,7 +247,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   constructor(
     targetLanguage: TargetLanguage,
     renderContext: RenderContext,
-    private readonly _options: OptionValues<typeof dartOptions>,
+    private readonly _oldOptions: OptionValues<typeof quicktypeDartOptions>,
     customDartOption: CustomDartOption,
   ) {
     super(targetLanguage, renderContext);
@@ -290,11 +290,11 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected get toJson(): string {
-    return `to${this._options.methodNamesWithMap ? "Map" : "Json"}`;
+    return `to${this._oldOptions.methodNamesWithMap ? "Map" : "Json"}`;
   }
 
   protected get fromJson(): string {
-    return `from${this._options.methodNamesWithMap ? "Map" : "Json"}`;
+    return `from${this._oldOptions.methodNamesWithMap ? "Map" : "Json"}`;
   }
 
   protected makeTopLevelDependencyNames(_t: Type, name: Name): DependencyName[] {
@@ -534,19 +534,19 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected emitClassDefinition(c: ClassType, className: Name): void {
     this.emitDescription(this.descriptionForType(c));
-
-    if(this.customDartOption.useSerializable){
-      this.emitLine("@JsonSerializable(", !this.customDartOption.generateToJson ? "createToJson: false" : "",")")
+    if (this.customDartOption.useSerializable) {
+      this.emitLine("@JsonSerializable(", !this.customDartOption.generateToJson ? "createToJson: false" : "", ")")
     }
 
-    this.emitBlock(["class ", className], () => {
+
+    this.emitBlock(this.customDartOption.useEquatable ? ["class ", className, " extends Equatable"] : ["class ", className], () => {
       if (c.getProperties().size === 0) {
         this.emitLine(className, "();");
       } else {
         this.emitLine(className, "({");
         this.indent(() => {
           this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this._options.requiredProperties ? "required " : "", "this.", name, ",");
+            this.emitLine(this._oldOptions.requiredProperties ? "required " : "", "this.", name, ",");
           });
         });
         this.emitLine("});");
@@ -556,7 +556,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
           const description = this.descriptionForClassProperty(c, jsonName);
 
-          if(this.customDartOption.useSerializable && jsonName !== name.namingFunction.nameStyle(jsonName)) {
+          if (this.customDartOption.useSerializable && jsonName !== name.namingFunction.nameStyle(jsonName)) {
             this.ensureBlankLine();
             this.emitLine("@JsonKey(name: '", jsonName, "') ");
           }
@@ -581,7 +581,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           }
 
           this.emitLine(
-            this._options.finalProperties ? "final " : "",
+            this._oldOptions.finalProperties ? "final " : "",
             type,
             letBeNull ? "? " : " ",
             name,
@@ -592,13 +592,17 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
       if (this.customDartOption.generateCopyWith) {
         this.ensureBlankLine();
-        this.emitLine(className, " copyWith({");
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+        if (c.getProperties().size === 0) {
+          this.emitLine(className, " copyWith(){");
+        } else {
+          this.emitLine(className, " copyWith({");
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, _, _p) => {
+              this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+            });
           });
-        });
-        this.emitLine("}) {");
+          this.emitLine("}) {");
+        }
         this.indent(() => {
           this.emitLine("return ", className, "(");
           this.indent(() => {
@@ -615,47 +619,74 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       if (this.customDartOption.useSerializable) {
         this.ensureBlankLine();
         this.emitLine(
-            "factory ",
-            className,
-            ".",
-            this.fromJson,
-            //TODO: make this json nullable
-            "(Map<String, dynamic> json) => _$" ,
-            className,
-            "FromJson(json);",
+          "factory ",
+          className,
+          ".",
+          this.fromJson,
+          //TODO: make this json nullable
+          "(Map<String, dynamic> json) => _$",
+          className,
+          "FromJson(json);",
         );
-      }else{
+      } else {
         this.ensureBlankLine();
         this.emitLine(
-            "factory ",
-            className,
-            ".",
-            this.fromJson,
-            //TODO: make this json nullable
-            "(Map<String, dynamic> json){ ",
+          "factory ",
+          className,
+          ".",
+          this.fromJson,
+          //TODO: make this json nullable
+          "(Map<String, dynamic> json){ ",
         );
         this.indent(() => {
           this.emitLine(
-              "return ",
-              className,
-              "("
+            "return ",
+            className,
+            "("
           );
         })
         this.indent(() => {
           this.forEachClassProperty(c, "none", (name, jsonName, property) => {
             this.emitLine(
-                name,
-                ": ",
-                this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
-                ","
+              name,
+              ": ",
+              this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
+              ","
             );
           });
         });
         this.emitLine(");");
         this.emitLine("}");
       }
+      this.ensureBlankLine();
+      if (this.customDartOption.generateToJson) {
+        if (this.customDartOption.useSerializable) {
 
+          this.ensureBlankLine();
 
+          this.emitLine("Map<String, dynamic> ",
+            this.toJson, "() => _$",
+            className,
+            "ToJson(this);",
+          );
+
+        } else {
+          this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+              this.emitLine(
+                '"',
+                stringEscape(jsonName),
+                '": ',
+                this.toDynamicExpression(property.type, name),
+                ","
+              );
+            });
+          });
+          this.emitLine("};");
+        }
+      }
+      this.ensureBlankLine();
       //Generate toString method
       if (this.customDartOption.generateToString) {
         this.ensureBlankLine();
@@ -671,35 +702,19 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         this.emitLine(data, "';");
         this.emitLine("}");
       }
-      //
-      this.ensureBlankLine();
-
-      if (this.customDartOption.generateToJson) {
-       if(this.customDartOption.useSerializable){
-
-         this.ensureBlankLine();
-
-         this.emitLine("Map<String, dynamic> ",
-             this.toJson, "() => _$",
-             className,
-             "ToJson(this);",
-         );
-
-       }else{
-         this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
-         this.indent(() => {
-           this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-             this.emitLine(
-                 '"',
-                 stringEscape(jsonName),
-                 '": ',
-                 this.toDynamicExpression(property.type, name),
-                 ","
-             );
-           });
-         });
-         this.emitLine("};");
-       }
+      //Generate Equatable Props
+      if (this.customDartOption.useEquatable) {
+        let data = '';
+        this.ensureBlankLine();
+        this.emitLine("@override");
+        this.emitLine("List<Object?> get props => [");
+        this.indent(() => {
+          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+            data += this.sourcelikeToString(name) + ", ";
+          });
+          return data;
+        });
+        this.emitLine(data, "];");
       }
     });
   }
@@ -709,7 +724,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.emitDescription(this.descriptionForType(e));
     this.emitLine("enum ", enumName, " { ", arrayIntercalate(", ", caseNames), " }");
 
-    if (this._options.justTypes) return;
+    if (this._oldOptions.justTypes) return;
 
     this.ensureBlankLine();
     this.emitLine("final ", defined(this._enumValues.get(e)), " = EnumValues({");
@@ -743,13 +758,17 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected emitSourceStructure(): void {
     this.emitFileHeader();
-    if (!this._options.justTypes && !this._options.codersInClass) {
+    if (!this._oldOptions.justTypes && !this._oldOptions.codersInClass) {
     }
 
-    if(this.customDartOption.useSerializable){
+    if (this.customDartOption.useEquatable) {
+      this.emitLine("import 'package:equatable/equatable.dart';");
+    }
+
+    if (this.customDartOption.useSerializable) {
       this.emitLine("import 'package:json_annotation/json_annotation.dart';");
       this.ensureBlankLine();
-      this.emitLine("part '", this._options.partName , ".g.dart';");//todo print part
+      this.emitLine("part '", this._oldOptions.partName, ".g.dart';");//todo print part
 
     }
 
@@ -757,7 +776,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.forEachNamedType(
       "leading-and-interposing",
       (c: ClassType, n: Name) =>
-        this._options.useFreezed
+        this._oldOptions.useFreezed
           ? this.emitFreezedClassDefinition(c, n)
           : this.emitClassDefinition(c, n),
       (e, n) => this.emitEnumDefinition(e, n),

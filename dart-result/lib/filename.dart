@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'filename.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class MyClass {
     MyClass({
         required this.valInt,
@@ -61,14 +61,15 @@ class MyClass {
 
     factory MyClass.fromJson(Map<String, dynamic> json) => _$MyClassFromJson(json);
 
+    Map<String, dynamic> toJson() => _$MyClassToJson(this);
+
     @override
     String toString(){
     return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
     }
-
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ValArrObj {
     ValArrObj({
         required this.dog,
@@ -84,14 +85,15 @@ class ValArrObj {
 
     factory ValArrObj.fromJson(Map<String, dynamic> json) => _$ValArrObjFromJson(json);
 
+    Map<String, dynamic> toJson() => _$ValArrObjToJson(this);
+
     @override
     String toString(){
     return '$dog, $cat, $hehe, $test';
     }
-
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ValObj {
     ValObj({
         required this.street,
@@ -103,14 +105,15 @@ class ValObj {
 
     factory ValObj.fromJson(Map<String, dynamic> json) => _$ValObjFromJson(json);
 
+    Map<String, dynamic> toJson() => _$ValObjToJson(this);
+
     @override
     String toString(){
     return '$street, $city';
     }
-
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ValObjInObj {
     ValObjInObj({
         required this.street,
@@ -124,14 +127,15 @@ class ValObjInObj {
 
     factory ValObjInObj.fromJson(Map<String, dynamic> json) => _$ValObjInObjFromJson(json);
 
+    Map<String, dynamic> toJson() => _$ValObjInObjToJson(this);
+
     @override
     String toString(){
     return '$street, $city, $province';
     }
-
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class Province {
     Province({
         required this.country,
@@ -145,22 +149,24 @@ class Province {
 
     factory Province.fromJson(Map<String, dynamic> json) => _$ProvinceFromJson(json);
 
+    Map<String, dynamic> toJson() => _$ProvinceToJson(this);
+
     @override
     String toString(){
     return '$country, $population, $something';
     }
-
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ValueObjEmpty {
     ValueObjEmpty();
 
     factory ValueObjEmpty.fromJson(Map<String, dynamic> json) => _$ValueObjEmptyFromJson(json);
 
+    Map<String, dynamic> toJson() => _$ValueObjEmptyToJson(this);
+
     @override
     String toString(){
     return '';
     }
-
 }

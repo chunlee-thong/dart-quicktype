@@ -5,22 +5,23 @@ async function test() {
   const jsonString = await fs.readFileSync("dart-json.json", "utf8");
   const result = await runQuickType("MyClass", jsonString, {
     generateToString: true,
-    generateCopyWith: false,
-    generateToJson: false,
+    generateCopyWith: true,
+    generateToJson: true,
     useDefaultValue: false,
-    useSerializable: false
+    useSerializable: false,
+    useEquatable: true,
   });
-  fs.writeFileSync("output.dart", result);
+  fs.writeFileSync("dart-result/lib/output.dart", result);
 
   const result2 = await runQuickType("MyClass", jsonString, {
     generateToString: true,
     generateCopyWith: false,
-    generateToJson: false,
+    generateToJson: true,
     useDefaultValue: false,
-    useSerializable: true
+    useSerializable: true,
+    useEquatable: false,
   });
-  fs.writeFileSync("output_serialization.dart", result2);
-
+  fs.writeFileSync("dart-result/lib/filename.dart", result2);
 }
 
 test();
