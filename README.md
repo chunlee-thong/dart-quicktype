@@ -1,6 +1,6 @@
 # Dart QuickType
 
-### version: 2.1.4
+### version: 2.1.6
 
 A custom implemenation of JSON to Dart model class from [QuickType](https://github.com/quicktype/quicktype).
 
@@ -10,7 +10,8 @@ This project is configure to fit my use case only so the default behavior will b
 
 - All fields are **final**
 - All fields are **required** 
-- has an option to generate toJSON,copyWith and toString
+- Has an option to generate `toJSON`,`copyWith` and `toString`
+- support `Equatable` and `JsonSerialize`
 - No freezed or hive
 
 ## Type setting

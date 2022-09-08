@@ -1,3 +1,11 @@
+## [2.1.6] - 8 September 2022
+
+- Add `Equatable` support 
+
+## [2.1.5] - 29 June 2022
+
+- Add `JsonSerializable` support (thank [sagarmahobia](https://github.com/sagarmahobia]))
+
 ## [2.1.4] - 7 April 2022
 
 - Add setting to disable default value
