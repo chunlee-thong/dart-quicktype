@@ -62,12 +62,8 @@
         <input type="text" class="form-control" id="class-name" required />
         <div id="check-group">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="use-serializable">
-            <label for="use-serializable">Use JsonSerializable</label>
-          </div>
-          <div class="form-check">
-            <label for="gen-json">Generate toJSON method</label>
             <input class="form-check-input" type="checkbox" id="gen-json">
+            <label for="gen-json">Generate toJSON method</label>
           </div>
 
           <div class="form-check">
@@ -77,6 +73,10 @@
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="gen-ts">
             <label for="gen-ts">Generate toString method</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="use-serializable">
+            <label for="use-serializable">Use JsonSerializable</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="use-equatable">
@@ -90,10 +90,7 @@
 
         </div>
         <div id="json-editor" class="editor"></div>
-        <!-- <textarea type="area" class="flex-grow-1 area form-control" id="json-input"
-          placeholder="JSON String"></textarea> -->
         <button class="btn btn-primary input" onclick="doConvert()">Convert</button>
-        <!-- <button class="btn btn-primary input" onclick="testCreateHistory()">Test</button> -->
         <hr />
       </div>
 
