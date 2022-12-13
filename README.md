@@ -6,6 +6,12 @@ A custom implemenation of JSON to Dart model class from [QuickType](https://gith
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f0148cf0-a1b5-4db5-89e9-936157b57e19/deploy-status)](https://app.netlify.com/sites/dart-quicktype/deploys)
 
+## Site variation
+
+- https://dart-quicktype.netlify.app/
+- https://dart-quicktype-2.netlify.app/
+- https://dart-quicktype-3.netlify.app/
+
 This project is configure to fit my use case only so the default behavior will be:
 
 - All fields are **final**
@@ -33,11 +39,6 @@ When Dart class is generated from json, nullable or non-nullable field are defin
 - Array can never be null
 - Object and DateTime always nullable
 - Other types can configure with checkbox setting
-
-
-## URL
-
-- Production: https://dart-quicktype.netlify.app/
 
 
 ### Customize for your use case
