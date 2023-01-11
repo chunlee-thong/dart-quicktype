@@ -10,6 +10,7 @@ async function test() {
     useDefaultValue: false,
     useSerializable: false,
     useEquatable: true,
+    useNum: false,
   });
   fs.writeFileSync("dart-result/lib/output.dart", result);
 
@@ -20,6 +21,7 @@ async function test() {
     useDefaultValue: false,
     useSerializable: true,
     useEquatable: false,
+    useNum: true,
   });
   fs.writeFileSync("dart-result/lib/filename.dart", result2);
 }

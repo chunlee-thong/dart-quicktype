@@ -7,6 +7,7 @@ const genTS = "gen-ts";
 const useDefaultValue = "use-default-value";
 const useEquatable = "use-equatable";
 const useSerializable = "use-serializable";
+const useNum = "use-num";
 
 var jsonEditor;
 var dartEditor;
@@ -37,6 +38,7 @@ function initSetting() {
   var useDefaultValueInput = document.getElementById(useDefaultValue);
   var useEquatableValueInput = document.getElementById(useEquatable);
   var useSerializableInput = document.getElementById(useSerializable);
+  var useNumInput = document.getElementById(useNum);
 
   genJsonInput.checked = localStorage.getItem(genJson) == "true";
   genCpyInput.checked = localStorage.getItem(genCPY) == "true";
@@ -44,7 +46,7 @@ function initSetting() {
   useDefaultValueInput.checked = localStorage.getItem(useDefaultValue) == "true";
   useEquatableValueInput.checked = localStorage.getItem(useEquatable) == "true";
   useSerializableInput.checked = localStorage.getItem(useSerializable) == "true";
-
+  useNumInput.checked = localStorage.getItem(useNum) == "true";
 
   genJsonInput.addEventListener("change", function () {
     localStorage.setItem(genJson, this.checked);
@@ -64,7 +66,9 @@ function initSetting() {
   useSerializableInput.addEventListener("change", function () {
     localStorage.setItem(useSerializable, this.checked);
   });
-
+  useNumInput.addEventListener("change", function () {
+    localStorage.setItem(useNum, this.checked);
+  });
 }
 
 function copyCode() {
@@ -92,7 +96,8 @@ function doConvert() {
     generateToJson: localStorage.getItem(genJson) == "true",
     useDefaultValue: localStorage.getItem(useDefaultValue) == "true",
     useEquatable: localStorage.getItem(useEquatable) == "true",
-    useSerializable: localStorage.getItem(useSerializable) == "true"
+    useSerializable: localStorage.getItem(useSerializable) == "true",
+    useNum: localStorage.getItem(useNum) == "true",
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);

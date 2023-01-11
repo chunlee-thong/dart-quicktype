@@ -4,16 +4,31 @@ import { arrayIntercalate } from "collection-utils";
 import { StringTypeMapping } from "quicktype-core";
 import { anyTypeIssueAnnotation, nullTypeIssueAnnotation } from "quicktype-core/dist/Annotation";
 import { ConvenienceRenderer, ForbiddenWordsInfo } from "quicktype-core/dist/ConvenienceRenderer";
-import { DependencyName, funPrefixNamer, Name, Namer } from "quicktype-core/dist/Naming";
+import { DependencyName, Name, Namer, funPrefixNamer } from "quicktype-core/dist/Naming";
 import { RenderContext } from "quicktype-core/dist/Renderer";
 import {
   BooleanOption,
-  getOptionValues,
   Option,
   OptionValues,
-  StringOption
+  StringOption,
+  getOptionValues,
 } from "quicktype-core/dist/RendererOptions";
-import { maybeAnnotated, Sourcelike } from "quicktype-core/dist/Source";
+import { Sourcelike, maybeAnnotated } from "quicktype-core/dist/Source";
+import { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
+import {
+  ClassProperty,
+  ClassType,
+  EnumType,
+  PrimitiveStringTypeKind,
+  TransformedStringTypeKind,
+  Type,
+  UnionType,
+} from "quicktype-core/dist/Type";
+import {
+  directlyReachableSingleNamedType,
+  matchType,
+  nullableFromUnion,
+} from "quicktype-core/dist/TypeUtils";
 import {
   allLowerWordStyle,
   allUpperWordStyle,
@@ -27,24 +42,9 @@ import {
   splitIntoWords,
   standardUnicodeHexEscape,
   utf16ConcatMap,
-  utf16LegalizeCharacters
+  utf16LegalizeCharacters,
 } from "quicktype-core/dist/support/Strings";
 import { defined } from "quicktype-core/dist/support/Support";
-import { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
-import {
-  ClassProperty,
-  ClassType,
-  EnumType,
-  PrimitiveStringTypeKind,
-  TransformedStringTypeKind,
-  Type,
-  UnionType
-} from "quicktype-core/dist/Type";
-import {
-  directlyReachableSingleNamedType,
-  matchType,
-  nullableFromUnion
-} from "quicktype-core/dist/TypeUtils";
 import { CustomDartOption } from ".";
 
 export const quicktypeDartOptions = {
@@ -69,11 +69,10 @@ export const quicktypeDartOptions = {
 // }
 
 export class CustomDartTargetLanguage extends TargetLanguage {
-
   customDartOptions: CustomDartOption;
   constructor(customDartOptions: CustomDartOption) {
     super("Dart", ["dart"], "dart");
-    this.customDartOptions = customDartOptions
+    this.customDartOptions = customDartOptions;
   }
 
   protected getOptions(): Option<any>[] {
@@ -216,8 +215,8 @@ function dartNameStyle(
   const firstWordStyle = upperUnderscore
     ? allUpperWordStyle
     : startWithUpper
-      ? firstUpperWordStyle
-      : allLowerWordStyle;
+    ? firstUpperWordStyle
+    : allLowerWordStyle;
   const restWordStyle = upperUnderscore ? allUpperWordStyle : firstUpperWordStyle;
   return combineWords(
     words,
@@ -242,13 +241,13 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   private readonly _topLevelDependents = new Map<Name, TopLevelDependents>();
   private readonly _enumValues = new Map<EnumType, Name>();
 
-  private readonly customDartOption: CustomDartOption
+  private readonly customDartOption: CustomDartOption;
 
   constructor(
     targetLanguage: TargetLanguage,
     renderContext: RenderContext,
     private readonly _oldOptions: OptionValues<typeof quicktypeDartOptions>,
-    customDartOption: CustomDartOption,
+    customDartOption: CustomDartOption
   ) {
     super(targetLanguage, renderContext);
     this.customDartOption = customDartOption;
@@ -372,13 +371,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected dartType(t: Type, withIssues: boolean = false, nullable: boolean = false): Sourcelike {
+    const useNumber = this.customDartOption.useNum;
     return matchType<Sourcelike>(
       t,
       (_anyType) => maybeAnnotated(withIssues, anyTypeIssueAnnotation, "dynamic"),
       (_nullType) => maybeAnnotated(withIssues, nullTypeIssueAnnotation, "dynamic"),
       (_boolType) => "bool",
-      (_integerType) => "int",
-      (_doubleType) => "double",
+      (_integerType) => (useNumber ? "num" : "int"),
+      (_doubleType) => (useNumber ? "num" : "double"),
       (_stringType) => "String",
       (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">"],
       (classType) => {
@@ -405,11 +405,26 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     );
   }
 
-  protected mapList(itemType: Sourcelike, list: Sourcelike, mapper: Sourcelike, toJson: boolean): Sourcelike {
+  protected mapList(
+    itemType: Sourcelike,
+    list: Sourcelike,
+    mapper: Sourcelike,
+    toJson: boolean
+  ): Sourcelike {
     if (toJson) {
-      return ["List<", itemType, ">.from(", list, ".map((x) => ", mapper, "))"];
+      return [list, ".map((x) => ", mapper, ")", ".toList()"];
     }
-    return [list, " == null ? [] : ", "List<", itemType, ">.from(", list, "!.map((x) => ", mapper, "))"];
+    return [
+      list,
+      " == null ? [] : ",
+      "List<",
+      itemType,
+      ">.from(",
+      list,
+      "!.map((x) => ",
+      mapper,
+      "))",
+    ];
   }
 
   protected mapMap(valueType: Sourcelike, map: Sourcelike, valueMapper: Sourcelike): Sourcelike {
@@ -438,7 +453,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.dartType(arrayType.items),
           dynamic,
           this.fromDynamicExpression(arrayType.items, "x"),
-          false,
+          false
         ),
       (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"],
       (mapType) =>
@@ -456,20 +471,21 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
         const type = this.dartType(t, true);
         let isAClass = false;
-        let hasDefaultValue = !Array.isArray(type) && type !== "DateTime" && this.customDartOption.useDefaultValue;
+        let hasDefaultValue =
+          !Array.isArray(type) && type !== "DateTime" && this.customDartOption.useDefaultValue;
         let defaultValue = null;
-        if (typeof type == 'object') {
+        if (typeof type == "object") {
           let isArray = Array.isArray(type);
           isAClass = !isArray && type["kind"] !== "annotated";
         }
         if (hasDefaultValue) {
           defaultValue = this.getDefaultValueForType(type);
         }
-        return isAClass ?
-          [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)]
-          : hasDefaultValue ?
-            [this.fromDynamicExpression(maybeNullable, dynamic, ` ?? ${defaultValue}`)]
-            : [this.fromDynamicExpression(maybeNullable, dynamic)]
+        return isAClass
+          ? [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)]
+          : hasDefaultValue
+          ? [this.fromDynamicExpression(maybeNullable, dynamic, ` ?? ${defaultValue}`)]
+          : [this.fromDynamicExpression(maybeNullable, dynamic)];
       },
       (transformedStringType) => {
         switch (transformedStringType.kind) {
@@ -485,7 +501,16 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected getDefaultValueForType(type): any {
     switch (type) {
-      case "int": return 0; case "double": return `0.toDouble()`; case "String": return `""`; case "bool": return false; default: ""
+      case "int":
+        return 0;
+      case "double":
+        return `0.toDouble()`;
+      case "String":
+        return `""`;
+      case "bool":
+        return false;
+      default:
+        "";
     }
   }
 
@@ -499,7 +524,12 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       (_doubleType) => dynamic,
       (_stringType) => dynamic,
       (arrayType) =>
-        this.mapList(this.dartType(arrayType.items), dynamic, this.toDynamicExpression(arrayType.items, "x"), true),
+        this.mapList(
+          this.dartType(arrayType.items),
+          dynamic,
+          this.toDynamicExpression(arrayType.items, "x"),
+          true
+        ),
       (_classType) => [dynamic, "?.", this.toJson, "()"],
       (mapType) => this.mapMap("dynamic", dynamic, this.toDynamicExpression(mapType.values, "v")),
       (enumType) => [defined(this._enumValues.get(enumType)), ".reverse[", dynamic, "]"],
@@ -535,188 +565,199 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   protected emitClassDefinition(c: ClassType, className: Name): void {
     this.emitDescription(this.descriptionForType(c));
     if (this.customDartOption.useSerializable) {
-      this.emitLine("@JsonSerializable(", !this.customDartOption.generateToJson ? "createToJson: false" : "", ")")
+      this.emitLine(
+        "@JsonSerializable(",
+        !this.customDartOption.generateToJson ? "createToJson: false" : "",
+        ")"
+      );
     }
 
-
-    this.emitBlock(this.customDartOption.useEquatable ? ["class ", className, " extends Equatable"] : ["class ", className], () => {
-      if (c.getProperties().size === 0) {
-        this.emitLine(className, "();");
-      } else {
-        this.emitLine(className, "({");
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, _, _p) => {
-            this.emitLine(this._oldOptions.requiredProperties ? "required " : "", "this.", name, ",");
-          });
-        });
-        this.emitLine("});");
-        this.ensureBlankLine();
-
-        this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-
-          const description = this.descriptionForClassProperty(c, jsonName);
-
-          if (this.customDartOption.useSerializable && jsonName !== name.namingFunction.nameStyle(jsonName)) {
-            this.ensureBlankLine();
-            this.emitLine("@JsonKey(name: '", jsonName, "') ");
-          }
-
-          if (description !== undefined) {
-            this.emitDescription(description);
-          }
-          const type = this.dartType(property.type, true);
-          //
-          const isDynamic = typeof type == 'object' && type["kind"] === "annotated";
-          const isAClass = typeof type == 'object';
-          const isDateTime = type == 'DateTime';
-          const isArray = Array.isArray(type);
-
-          let letBeNull = false;
-          if (isDynamic || (!this.customDartOption.useSerializable && isArray)) {
-            letBeNull = false;
-          } else if (isAClass || isDateTime) {
-            letBeNull = true;
-          } else {
-            letBeNull = this.customDartOption.useDefaultValue == false;
-          }
-
-          this.emitLine(
-            this._oldOptions.finalProperties ? "final " : "",
-            type,
-            letBeNull ? "? " : " ",
-            name,
-            ";"
-          );
-        });
-      }
-
-      if (this.customDartOption.generateCopyWith) {
-        this.ensureBlankLine();
+    this.emitBlock(
+      this.customDartOption.useEquatable
+        ? ["class ", className, " extends Equatable"]
+        : ["class ", className],
+      () => {
         if (c.getProperties().size === 0) {
-          this.emitLine(className, " copyWith(){");
+          this.emitLine(className, "();");
         } else {
-          this.emitLine(className, " copyWith({");
+          this.emitLine(className, "({");
           this.indent(() => {
             this.forEachClassProperty(c, "none", (name, _, _p) => {
-              this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
-            });
-          });
-          this.emitLine("}) {");
-        }
-        this.indent(() => {
-          this.emitLine("return ", className, "(");
-          this.indent(() => {
-            this.forEachClassProperty(c, "none", (name, _, _p) => {
-              this.emitLine(name, ": ", name, " ?? ", "this.", name, ",");
-            });
-          });
-          this.emitLine(");");
-          this.emitLine("}");
-          this.ensureBlankLine();
-        });
-      }
-
-      if (this.customDartOption.useSerializable) {
-        this.ensureBlankLine();
-        this.emitLine(
-          "factory ",
-          className,
-          ".",
-          this.fromJson,
-          //TODO: make this json nullable
-          "(Map<String, dynamic> json) => _$",
-          className,
-          "FromJson(json);",
-        );
-      } else {
-        this.ensureBlankLine();
-        this.emitLine(
-          "factory ",
-          className,
-          ".",
-          this.fromJson,
-          //TODO: make this json nullable
-          "(Map<String, dynamic> json){ ",
-        );
-        this.indent(() => {
-          this.emitLine(
-            "return ",
-            className,
-            "("
-          );
-        })
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-            this.emitLine(
-              name,
-              ": ",
-              this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
-              ","
-            );
-          });
-        });
-        this.emitLine(");");
-        this.emitLine("}");
-      }
-      this.ensureBlankLine();
-      if (this.customDartOption.generateToJson) {
-        if (this.customDartOption.useSerializable) {
-
-          this.ensureBlankLine();
-
-          this.emitLine("Map<String, dynamic> ",
-            this.toJson, "() => _$",
-            className,
-            "ToJson(this);",
-          );
-
-        } else {
-          this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
-          this.indent(() => {
-            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
               this.emitLine(
-                '"',
-                stringEscape(jsonName),
-                '": ',
-                this.toDynamicExpression(property.type, name),
+                this._oldOptions.requiredProperties ? "required " : "",
+                "this.",
+                name,
                 ","
               );
             });
           });
-          this.emitLine("};");
+          this.emitLine("});");
+          this.ensureBlankLine();
+
+          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+            const description = this.descriptionForClassProperty(c, jsonName);
+
+            if (
+              this.customDartOption.useSerializable &&
+              jsonName !== name.namingFunction.nameStyle(jsonName)
+            ) {
+              this.ensureBlankLine();
+              this.emitLine("@JsonKey(name: '", jsonName, "') ");
+            }
+
+            if (description !== undefined) {
+              this.emitDescription(description);
+            }
+            const type = this.dartType(property.type, true);
+            //
+            const isDynamic = typeof type == "object" && type["kind"] === "annotated";
+            const isAClass = typeof type == "object";
+            const isDateTime = type == "DateTime";
+            const isArray = Array.isArray(type);
+
+            let letBeNull = false;
+            if (isDynamic || (!this.customDartOption.useSerializable && isArray)) {
+              letBeNull = false;
+            } else if (isAClass || isDateTime) {
+              letBeNull = true;
+            } else {
+              letBeNull = this.customDartOption.useDefaultValue == false;
+            }
+
+            this.emitLine(
+              this._oldOptions.finalProperties ? "final " : "",
+              type,
+              letBeNull ? "? " : " ",
+              name,
+              ";"
+            );
+          });
+        }
+
+        if (this.customDartOption.generateCopyWith) {
+          this.ensureBlankLine();
+          if (c.getProperties().size === 0) {
+            this.emitLine(className, " copyWith(){");
+          } else {
+            this.emitLine(className, " copyWith({");
+            this.indent(() => {
+              this.forEachClassProperty(c, "none", (name, _, _p) => {
+                this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+              });
+            });
+            this.emitLine("}) {");
+          }
+          this.indent(() => {
+            this.emitLine("return ", className, "(");
+            this.indent(() => {
+              this.forEachClassProperty(c, "none", (name, _, _p) => {
+                this.emitLine(name, ": ", name, " ?? ", "this.", name, ",");
+              });
+            });
+            this.emitLine(");");
+            this.emitLine("}");
+            this.ensureBlankLine();
+          });
+        }
+
+        if (this.customDartOption.useSerializable) {
+          this.ensureBlankLine();
+          this.emitLine(
+            "factory ",
+            className,
+            ".",
+            this.fromJson,
+            //TODO: make this json nullable
+            "(Map<String, dynamic> json) => _$",
+            className,
+            "FromJson(json);"
+          );
+        } else {
+          this.ensureBlankLine();
+          this.emitLine(
+            "factory ",
+            className,
+            ".",
+            this.fromJson,
+            //TODO: make this json nullable
+            "(Map<String, dynamic> json){ "
+          );
+          this.indent(() => {
+            this.emitLine("return ", className, "(");
+          });
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+              this.emitLine(
+                name,
+                ": ",
+                this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
+                ","
+              );
+            });
+          });
+          this.emitLine(");");
+          this.emitLine("}");
+        }
+        this.ensureBlankLine();
+        if (this.customDartOption.generateToJson) {
+          if (this.customDartOption.useSerializable) {
+            this.ensureBlankLine();
+
+            this.emitLine(
+              "Map<String, dynamic> ",
+              this.toJson,
+              "() => _$",
+              className,
+              "ToJson(this);"
+            );
+          } else {
+            this.emitLine("Map<String, dynamic> ", this.toJson, "() => {");
+            this.indent(() => {
+              this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+                this.emitLine(
+                  '"',
+                  stringEscape(jsonName),
+                  '": ',
+                  this.toDynamicExpression(property.type, name),
+                  ","
+                );
+              });
+            });
+            this.emitLine("};");
+          }
+        }
+        this.ensureBlankLine();
+        //Generate toString method
+        if (this.customDartOption.generateToString) {
+          this.ensureBlankLine();
+          this.emitLine("@override");
+          this.emitLine("String toString(){");
+          let data = "return '";
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+              data += "$" + this.sourcelikeToString(name) + ", ";
+            });
+            return data;
+          });
+          this.emitLine(data, "';");
+          this.emitLine("}");
+        }
+        //Generate Equatable Props
+        if (this.customDartOption.useEquatable) {
+          let data = "";
+          this.ensureBlankLine();
+          this.emitLine("@override");
+          this.emitLine("List<Object?> get props => [");
+          this.indent(() => {
+            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+              data += this.sourcelikeToString(name) + ", ";
+            });
+            return data;
+          });
+          this.emitLine(data, "];");
         }
       }
-      this.ensureBlankLine();
-      //Generate toString method
-      if (this.customDartOption.generateToString) {
-        this.ensureBlankLine();
-        this.emitLine("@override");
-        this.emitLine("String toString(){");
-        let data = "return '";
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-            data += "$" + this.sourcelikeToString(name) + ", ";
-          });
-          return data;
-        });
-        this.emitLine(data, "';");
-        this.emitLine("}");
-      }
-      //Generate Equatable Props
-      if (this.customDartOption.useEquatable) {
-        let data = '';
-        this.ensureBlankLine();
-        this.emitLine("@override");
-        this.emitLine("List<Object?> get props => [");
-        this.indent(() => {
-          this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-            data += this.sourcelikeToString(name) + ", ";
-          });
-          return data;
-        });
-        this.emitLine(data, "];");
-      }
-    });
+    );
   }
 
   protected emitEnumDefinition(e: EnumType, enumName: Name): void {
@@ -768,10 +809,8 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     if (this.customDartOption.useSerializable) {
       this.emitLine("import 'package:json_annotation/json_annotation.dart';");
       this.ensureBlankLine();
-      this.emitLine("part '", this._oldOptions.partName, ".g.dart';");//todo print part
-
+      this.emitLine("part '", this._oldOptions.partName, ".g.dart';"); //todo print part
     }
-
 
     this.forEachNamedType(
       "leading-and-interposing",
