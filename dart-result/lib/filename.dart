@@ -21,7 +21,7 @@ class MyClass {
     });
 
     @JsonKey(name: 'val_int') 
-    final int? valInt;
+    final num? valInt;
 
     @JsonKey(name: 'val_bool') 
     final bool? valBool;
@@ -36,10 +36,10 @@ class MyClass {
     final dynamic valNull;
 
     @JsonKey(name: 'val_double') 
-    final double? valDouble;
+    final num? valDouble;
 
     @JsonKey(name: 'val_arr_int') 
-    final List<int>? valArrInt;
+    final List<num>? valArrInt;
 
     @JsonKey(name: 'value_arr_empty') 
     final List<dynamic>? valueArrEmpty;
@@ -79,7 +79,7 @@ class ValArrObj {
     });
 
     final String? dog;
-    final double? cat;
+    final num? cat;
     final bool? hehe;
     final String? test;
 
@@ -144,7 +144,7 @@ class Province {
     });
 
     final String? country;
-    final double? population;
+    final num? population;
     final List<String>? something;
 
     factory Province.fromJson(Map<String, dynamic> json) => _$ProvinceFromJson(json);

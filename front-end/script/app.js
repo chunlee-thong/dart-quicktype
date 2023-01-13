@@ -1,12 +1,17 @@
 const jsonInput = "json-input";
 const classNameInput = "class-name";
 //
-const genJson = "gen-json";
-const genCPY = "gen-cpy";
-const genTS = "gen-ts";
-const useDefaultValue = "use-default-value";
-const useEquatable = "use-equatable";
-const useSerializable = "use-serializable";
+
+const options = {
+  genJson: "gen-json",
+  genCPY: "gen-cpy",
+  genTS: "gen-ts",
+  useDefaultValue: "use-default-value",
+  useEquatable: "use-equatable",
+  useSerializable: "use-serializable",
+  useNum: "use-num",
+  genJsonKey: "gen-key",
+};
 
 var jsonEditor;
 var dartEditor;
@@ -31,40 +36,16 @@ window.onload = async function () {
 };
 
 function initSetting() {
-  var genJsonInput = document.getElementById(genJson);
-  var genCpyInput = document.getElementById(genCPY);
-  var genTsInput = document.getElementById(genTS);
-  var useDefaultValueInput = document.getElementById(useDefaultValue);
-  var useEquatableValueInput = document.getElementById(useEquatable);
-  var useSerializableInput = document.getElementById(useSerializable);
+  var values = Object.values(options);
+  for (var i = 0; i < values.length; ++i) {
+    var key = values[i];
+    document.getElementById(values[i]).checked = localStorage.getItem(key) == "true";
+    document.getElementById(key).addEventListener("change", listener);
+  }
+}
 
-  genJsonInput.checked = localStorage.getItem(genJson) == "true";
-  genCpyInput.checked = localStorage.getItem(genCPY) == "true";
-  genTsInput.checked = localStorage.getItem(genTS) == "true";
-  useDefaultValueInput.checked = localStorage.getItem(useDefaultValue) == "true";
-  useEquatableValueInput.checked = localStorage.getItem(useEquatable) == "true";
-  useSerializableInput.checked = localStorage.getItem(useSerializable) == "true";
-
-
-  genJsonInput.addEventListener("change", function () {
-    localStorage.setItem(genJson, this.checked);
-  });
-  genCpyInput.addEventListener("change", function () {
-    localStorage.setItem(genCPY, this.checked);
-  });
-  genTsInput.addEventListener("change", function () {
-    localStorage.setItem(genTS, this.checked);
-  });
-  useDefaultValueInput.addEventListener("change", function () {
-    localStorage.setItem(useDefaultValue, this.checked);
-  });
-  useEquatableValueInput.addEventListener("change", function () {
-    localStorage.setItem(useEquatable, this.checked);
-  });
-  useSerializableInput.addEventListener("change", function () {
-    localStorage.setItem(useSerializable, this.checked);
-  });
-
+function listener(event) {
+  localStorage.setItem(event.target.id, event.target.checked);
 }
 
 function copyCode() {
@@ -86,13 +67,16 @@ function doConvert() {
     alert("Please input json string");
     return;
   }
+  var keys = Object.values(options);
   QuickType.runQuickType(className, jsonString, {
-    generateToString: localStorage.getItem(genTS) == "true",
-    generateCopyWith: localStorage.getItem(genCPY) == "true",
-    generateToJson: localStorage.getItem(genJson) == "true",
-    useDefaultValue: localStorage.getItem(useDefaultValue) == "true",
-    useEquatable: localStorage.getItem(useEquatable) == "true",
-    useSerializable: localStorage.getItem(useSerializable) == "true"
+    generateToJson: isEnable(keys[0]),
+    generateCopyWith: isEnable(keys[1]),
+    generateToString: isEnable(keys[2]),
+    useDefaultValue: isEnable(keys[3]),
+    useEquatable: isEnable(keys[4]),
+    useSerializable: isEnable(keys[5]),
+    useNum: isEnable(keys[6]),
+    generateKey: isEnable(keys[7]),
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);
@@ -103,6 +87,10 @@ function doConvert() {
     .catch((err) => {
       alert(err);
     });
+}
+
+function isEnable(key) {
+  return localStorage.getItem(key) == "true";
 }
 
 function getHistory() {

@@ -1,5 +1,5 @@
 /* https://github.com/JetBrains/JetBrainsMono */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
 
 html,
 body {
@@ -13,11 +13,9 @@ body {
   font-family: "Source Sans Pro", monospace;
   display: flex;
   flex-direction: column;
-
 }
 
-input[type=checkbox]
-{
+input[type="checkbox"] {
   -ms-transform: scale(1.2);
   -moz-transform: scale(1.2);
   -webkit-transform: scale(1.2);
@@ -35,7 +33,14 @@ input[type=checkbox]
   height: 100%;
 }
 
-.row{
+.code {
+  color: cyan;
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.row {
   height: 100%;
 }
 
@@ -50,7 +55,8 @@ input[type=checkbox]
   white-space: nowrap;
 }
 
-h2, label {
+h2,
+label {
   color: white;
 }
 
