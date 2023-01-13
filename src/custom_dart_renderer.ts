@@ -631,6 +631,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               name,
               ";"
             );
+            if (this.customDartOption.generateKey) {
+              this.emitLine(`static const String `, name, `Key`, ` = "${jsonName}";`, "\n");
+            }
           });
         }
 

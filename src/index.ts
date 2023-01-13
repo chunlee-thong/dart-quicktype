@@ -9,6 +9,7 @@ export type CustomDartOption = {
   useSerializable: boolean;
   useEquatable: boolean;
   useNum: boolean;
+  generateKey: boolean;
 };
 
 export async function runQuickType(
