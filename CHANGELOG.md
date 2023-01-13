@@ -1,3 +1,9 @@
+## [2.2.0] - 13 January 2023
+
+- Add generate JSON keys
+- Add always use num type
+- UI and indentation improvement 
+
 ## [2.1.6] - 8 September 2022
 
 - Add `Equatable` support 

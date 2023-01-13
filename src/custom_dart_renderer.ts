@@ -504,7 +504,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       case "int":
         return 0;
       case "num":
-          return 0;
+        return 0;
       case "double":
         return `0.0`;
       case "String":
@@ -660,9 +660,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               });
             });
             this.emitLine(");");
-            this.emitLine("}");
-            this.ensureBlankLine();
           });
+          this.emitLine("}");
+          this.ensureBlankLine();
         }
 
         if (this.customDartOption.useSerializable) {
@@ -691,16 +691,20 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             this.emitLine("return ", className, "(");
           });
           this.indent(() => {
-            this.forEachClassProperty(c, "none", (name, jsonName, property) => {
-              this.emitLine(
-                name,
-                ": ",
-                this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
-                ","
-              );
+            this.indent(() => {
+              this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+                this.emitLine(
+                  name,
+                  ": ",
+                  this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
+                  ","
+                );
+              });
             });
           });
-          this.emitLine(");");
+          this.indent(() => {
+            this.emitLine(");");
+          });
           this.emitLine("}");
         }
         this.ensureBlankLine();
@@ -737,14 +741,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.ensureBlankLine();
           this.emitLine("@override");
           this.emitLine("String toString(){");
-          let data = "return '";
+          let data = `    return "`;
           this.indent(() => {
             this.forEachClassProperty(c, "none", (name, jsonName, property) => {
               data += "$" + this.sourcelikeToString(name) + ", ";
             });
             return data;
           });
-          this.emitLine(data, "';");
+          this.emitLine(data, `";`);
           this.emitLine("}");
         }
         //Generate Equatable Props
