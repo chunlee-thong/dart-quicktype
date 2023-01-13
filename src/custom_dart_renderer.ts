@@ -503,8 +503,10 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     switch (type) {
       case "int":
         return 0;
+      case "num":
+          return 0;
       case "double":
-        return `0.toDouble()`;
+        return `0.0`;
       case "String":
         return `""`;
       case "bool":
