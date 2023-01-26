@@ -59,6 +59,8 @@ function copyCode() {
 function doConvert() {
   var className = document.getElementById(classNameInput).value;
   let jsonString = jsonEditor.getValue();
+  jsonEditor.setValue(JSON.stringify(JSON.parse(jsonString), null, "\t"));
+  jsonString = jsonEditor.getValue();
   if (!className) {
     alert("Please input class name");
     return;
