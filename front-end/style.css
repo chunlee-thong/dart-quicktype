@@ -45,14 +45,8 @@ input[type="checkbox"] {
 }
 
 .list-group {
-  height: 90%;
+  height: 80vh;
   overflow: scroll;
-}
-
-.list-group-item {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 h2,
