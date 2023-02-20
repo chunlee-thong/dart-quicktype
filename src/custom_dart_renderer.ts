@@ -372,18 +372,17 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected dartType(t: Type, withIssues: boolean = false, nullable: boolean = false): Sourcelike {
     let useNumber = this.customDartOption.useNum;
-    const jsonName: String = t.getNames().names.values().next().value;
-    if (jsonName.includes("id")) {
-      console.log(jsonName);
-      useNumber = false;
-    }
     return matchType<Sourcelike>(
       t,
       (_anyType) => maybeAnnotated(withIssues, anyTypeIssueAnnotation, "dynamic"),
       (_nullType) => maybeAnnotated(withIssues, nullTypeIssueAnnotation, "dynamic"),
       (_boolType) => "bool",
-      (_integerType) => (useNumber ? "num" : "int"),
-      (_doubleType) => (useNumber ? "num" : "double"),
+      (_integerType) => {
+        return useNumber ? "num" : "int";
+      },
+      (_doubleType) => {
+        return useNumber ? "num" : "double";
+      },
       (_stringType) => "String",
       (arrayType) => ["List<", this.dartType(arrayType.items, withIssues), ">"],
       (classType) => {
@@ -496,7 +495,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         switch (transformedStringType.kind) {
           case "date-time":
           case "date":
-            return [dynamic, " == null ? null : ", "DateTime.parse(", dynamic, ")"];
+            return ["DateTime.tryParse(", dynamic, ")"];
           default:
             return dynamic;
         }
@@ -615,7 +614,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             if (description !== undefined) {
               this.emitDescription(description);
             }
-            const type = this.dartType(property.type, true);
+            let type = this.dartType(property.type, true);
             //
             const isDynamic = typeof type == "object" && type["kind"] === "annotated";
             const isAClass = typeof type == "object";
@@ -629,6 +628,10 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               letBeNull = true;
             } else {
               letBeNull = this.customDartOption.useDefaultValue == false;
+            }
+
+            if (type == "num" && jsonName.includes("id")) {
+              type = "int";
             }
 
             this.emitLine(
@@ -651,8 +654,12 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           } else {
             this.emitLine(className, " copyWith({");
             this.indent(() => {
-              this.forEachClassProperty(c, "none", (name, _, _p) => {
-                this.emitLine(this.dartType(_p.type, true, true), "? ", name, ",");
+              this.forEachClassProperty(c, "none", (name, jsonName, _p) => {
+                let type = this.dartType(_p.type, true, true);
+                if (type == "num" && jsonName.includes("id")) {
+                  type = "int";
+                }
+                this.emitLine(type, "? ", name, ",");
               });
             });
             this.emitLine("}) {");
@@ -660,7 +667,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.indent(() => {
             this.emitLine("return ", className, "(");
             this.indent(() => {
-              this.forEachClassProperty(c, "none", (name, _, _p) => {
+              this.forEachClassProperty(c, "none", (name, jsonName, _p) => {
                 this.emitLine(name, ": ", name, " ?? ", "this.", name, ",");
               });
             });

@@ -25,7 +25,7 @@ class MyClass {
     });
 
     @JsonKey(name: 'val_int') 
-    final int? valInt;
+    final num? valInt;
 
     @JsonKey(name: 'val_id') 
     final int? valId;
@@ -50,7 +50,7 @@ class MyClass {
     final num? valDouble;
 
     @JsonKey(name: 'val_arr_int') 
-    final List<int>? valArrInt;
+    final List<num>? valArrInt;
 
     @JsonKey(name: 'val_arr_number') 
     final List<num>? valArrNumber;

@@ -10,7 +10,7 @@ async function test() {
     useDefaultValue: true,
     useSerializable: false,
     useEquatable: false,
-    useNum: false,
+    useNum: true,
     generateKey: false,
   });
   fs.writeFileSync("dart-result/lib/output.dart", result);
