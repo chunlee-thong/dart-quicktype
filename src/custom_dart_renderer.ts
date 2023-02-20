@@ -371,7 +371,12 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected dartType(t: Type, withIssues: boolean = false, nullable: boolean = false): Sourcelike {
-    const useNumber = this.customDartOption.useNum;
+    let useNumber = this.customDartOption.useNum;
+    const jsonName: String = t.getNames().names.values().next().value;
+    if (jsonName.includes("id")) {
+      console.log(jsonName);
+      useNumber = false;
+    }
     return matchType<Sourcelike>(
       t,
       (_anyType) => maybeAnnotated(withIssues, anyTypeIssueAnnotation, "dynamic"),

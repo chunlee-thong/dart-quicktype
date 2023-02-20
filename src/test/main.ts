@@ -7,11 +7,11 @@ async function test() {
     generateToString: true,
     generateCopyWith: true,
     generateToJson: true,
-    useDefaultValue: false,
+    useDefaultValue: true,
     useSerializable: false,
-    useEquatable: true,
+    useEquatable: false,
     useNum: false,
-    generateKey: true,
+    generateKey: false,
   });
   fs.writeFileSync("dart-result/lib/output.dart", result);
 

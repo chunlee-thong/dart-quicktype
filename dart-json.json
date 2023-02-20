@@ -1,21 +1,18 @@
 {
   "val_int": 4,
+  "val_id": 3,
+  "id": 3,
+  "_id": 3,
   "val_bool": true,
   "val_date": "2021-05-21T05:08:24.244Z",
   "val_string": "a320596d-852d-48e6-8219-e5b170f15293.jpg",
   "val_null": null,
   "val_double": 23.45,
-  "val_arr_int": [
-    123,
-    123,
-    123
-  ],
+  "val_arr_int": [123, 123, 123],
+  "val_arr_number": [123.5, 123, 123],
   "value_arr_empty": [],
   "value_obj_empty": {},
-  "val_arr_string": [
-    "chunlee.jpg",
-    "kappa.png"
-  ],
+  "val_arr_string": ["chunlee.jpg", "kappa.png"],
   "val_obj": {
     "street": "9MC",
     "city": "PP"
@@ -26,9 +23,7 @@
     "province": {
       "country": "cambodia",
       "population": 16.7,
-      "something": [
-        "hello"
-      ]
+      "something": ["hello"]
     }
   },
   "val_arr_obj": [
