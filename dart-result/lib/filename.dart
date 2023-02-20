@@ -6,12 +6,16 @@ part 'filename.g.dart';
 class MyClass {
     MyClass({
         required this.valInt,
+        required this.valId,
+        required this.myClassId,
+        required this.id,
         required this.valBool,
         required this.valDate,
         required this.valString,
         required this.valNull,
         required this.valDouble,
         required this.valArrInt,
+        required this.valArrNumber,
         required this.valueArrEmpty,
         required this.valueObjEmpty,
         required this.valArrString,
@@ -22,6 +26,13 @@ class MyClass {
 
     @JsonKey(name: 'val_int') 
     final num? valInt;
+
+    @JsonKey(name: 'val_id') 
+    final int? valId;
+    final int? myClassId;
+
+    @JsonKey(name: '_id') 
+    final int? id;
 
     @JsonKey(name: 'val_bool') 
     final bool? valBool;
@@ -40,6 +51,9 @@ class MyClass {
 
     @JsonKey(name: 'val_arr_int') 
     final List<num>? valArrInt;
+
+    @JsonKey(name: 'val_arr_number') 
+    final List<num>? valArrNumber;
 
     @JsonKey(name: 'value_arr_empty') 
     final List<dynamic>? valueArrEmpty;
@@ -65,7 +79,7 @@ class MyClass {
 
     @override
     String toString(){
-    return '$valInt, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj';
+        return "$valInt, $valId, $myClassId, $id, $valBool, $valDate, $valString, $valNull, $valDouble, $valArrInt, $valArrNumber, $valueArrEmpty, $valueObjEmpty, $valArrString, $valObj, $valObjInObj, $valArrObj, ";
     }
 }
 
@@ -89,7 +103,7 @@ class ValArrObj {
 
     @override
     String toString(){
-    return '$dog, $cat, $hehe, $test';
+        return "$dog, $cat, $hehe, $test, ";
     }
 }
 
@@ -109,7 +123,7 @@ class ValObj {
 
     @override
     String toString(){
-    return '$street, $city';
+        return "$street, $city, ";
     }
 }
 
@@ -131,7 +145,7 @@ class ValObjInObj {
 
     @override
     String toString(){
-    return '$street, $city, $province';
+        return "$street, $city, $province, ";
     }
 }
 
@@ -153,7 +167,7 @@ class Province {
 
     @override
     String toString(){
-    return '$country, $population, $something';
+        return "$country, $population, $something, ";
     }
 }
 
@@ -167,6 +181,6 @@ class ValueObjEmpty {
 
     @override
     String toString(){
-    return '';
+        return "";
     }
 }
