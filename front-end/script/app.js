@@ -107,10 +107,6 @@ export function onSelectHistory(selected) {
 
 function saveToHistory(className, jsonString) {
   let history = getHistory();
-  let keys = Object.keys(history);
-  if (keys.length > 20) {
-    delete history[keys[0]];
-  }
   history[className] = { className, jsonString };
   localStorage.setItem("history", JSON.stringify(history));
   initHistory();
