@@ -68,3 +68,29 @@ p {
   width: 100%;
   margin-top: 24px;
 }
+
+.my-tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.my-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 15rem;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  position: absolute;
+  z-index: 1;
+  top: -100px;
+  left: -100px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.my-tooltip:hover .tooltiptext {
+  visibility: visible;
+}
