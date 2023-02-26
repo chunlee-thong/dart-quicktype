@@ -12,6 +12,7 @@ async function test() {
     useEquatable: false,
     useNum: true,
     generateKey: false,
+    generateJsonComment: true,
   });
   fs.writeFileSync("dart-result/lib/output.dart", result);
 
@@ -24,6 +25,7 @@ async function test() {
     useEquatable: false,
     useNum: true,
     generateKey: false,
+    generateJsonComment: false,
   });
   fs.writeFileSync("dart-result/lib/filename.dart", result2);
 }

@@ -11,6 +11,7 @@ const options = {
   useSerializable: "use-serializable",
   useNum: "use-num",
   genJsonKey: "gen-key",
+  genJsonComment: "gen-json-comment",
 };
 
 var jsonEditor;
@@ -77,6 +78,7 @@ function doConvert() {
     useSerializable: isEnable(keys[5]),
     useNum: isEnable(keys[6]),
     generateKey: isEnable(keys[7]),
+    genJsonComment: isEnable(keys[8]),
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);

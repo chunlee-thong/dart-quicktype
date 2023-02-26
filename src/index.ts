@@ -10,6 +10,7 @@ export type CustomDartOption = {
   useEquatable: boolean;
   useNum: boolean;
   generateKey: boolean;
+  generateJsonComment: boolean;
 };
 
 export async function runQuickType(

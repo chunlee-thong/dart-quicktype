@@ -495,7 +495,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         switch (transformedStringType.kind) {
           case "date-time":
           case "date":
-            return ["DateTime.tryParse(", dynamic, ")"];
+            return ["DateTime.tryParse(", dynamic, ` ?? ""`, ")"];
           default:
             return dynamic;
         }
@@ -776,6 +776,10 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             return data;
           });
           this.emitLine(data, "];");
+        }
+
+        if (this.customDartOption.generateJsonComment) {
+          this.ensureBlankLine();
         }
       }
     );

@@ -87,7 +87,8 @@
 
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="use-num">
-                <label for="use-num">Always use <span class="code">num</span> type</label>
+                <label for="use-num">Always use <span class="code">num</span> type for
+                  number</label>
               </div>
 
             </div>
@@ -102,8 +103,13 @@
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="use-default-value">
-                <label for="use-default-value">Use default value</label>
-                <p>int, double, bool, String won't be null and replace with default value</p>
+                <label for="use-default-value">Use default value <span class="my-tooltip">ⓘ<span
+                      class="tooltiptext">int, double, bool, String won't be null and replace with
+                      default value</span></span></label>
+              </div>
+              <div class="form-check" style="visibility: hidden;">
+                <input class="form-check-input" type="checkbox" id="gen-json-comment">
+                <label for="generate-json-comment">Generate json as comment</label>
               </div>
             </div>
           </div>

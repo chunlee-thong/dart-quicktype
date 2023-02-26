@@ -1,3 +1,9 @@
+## [2.3.0] - 26 February 2023
+
+- Support unlimited history
+- update `DateTime` parse method
+- field's name that contains `id` now always use `int` type if it's a number
+
 ## [2.2.0] - 13 January 2023
 
 - Add generate JSON keys
