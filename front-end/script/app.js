@@ -62,6 +62,7 @@ function doConvert() {
   let jsonString = jsonEditor.getValue();
   jsonEditor.setValue(JSON.stringify(JSON.parse(jsonString), null, "\t"));
   jsonString = jsonEditor.getValue();
+  jsonEditor.clearSelection();
   if (!className) {
     alert("Please input class name");
     return;
