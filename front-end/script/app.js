@@ -78,7 +78,7 @@ function doConvert() {
     useSerializable: isEnable(keys[5]),
     useNum: isEnable(keys[6]),
     generateKey: isEnable(keys[7]),
-    genJsonComment: isEnable(keys[8]),
+    generateJsonComment: isEnable(keys[8]),
   })
     .then((output) => {
       localStorage.setItem(classNameInput, className);

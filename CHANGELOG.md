@@ -1,3 +1,8 @@
+## [2.4.0] - 27 February 2023
+
+- add generate json as comment setting
+- improve setting tooltips
+
 ## [2.3.0] - 26 February 2023
 
 - Support unlimited history

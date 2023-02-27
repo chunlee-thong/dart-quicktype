@@ -7,16 +7,22 @@ part of 'filename.dart';
 // **************************************************************************
 
 MyClass _$MyClassFromJson(Map<String, dynamic> json) => MyClass(
-      valInt: json['val_int'] as int?,
+      valInt: json['val_int'] as num?,
+      valId: json['val_id'] as int?,
+      myClassId: json['myClassId'] as int?,
+      id: json['_id'] as int?,
       valBool: json['val_bool'] as bool?,
       valDate: json['val_date'] == null
           ? null
           : DateTime.parse(json['val_date'] as String),
       valString: json['val_string'] as String?,
       valNull: json['val_null'],
-      valDouble: (json['val_double'] as num?)?.toDouble(),
+      valDouble: json['val_double'] as num?,
       valArrInt: (json['val_arr_int'] as List<dynamic>?)
-          ?.map((e) => e as int)
+          ?.map((e) => e as num)
+          .toList(),
+      valArrNumber: (json['val_arr_number'] as List<dynamic>?)
+          ?.map((e) => e as num)
           .toList(),
       valueArrEmpty: json['value_arr_empty'] as List<dynamic>?,
       valueObjEmpty: json['value_obj_empty'] == null
@@ -40,12 +46,16 @@ MyClass _$MyClassFromJson(Map<String, dynamic> json) => MyClass(
 
 Map<String, dynamic> _$MyClassToJson(MyClass instance) => <String, dynamic>{
       'val_int': instance.valInt,
+      'val_id': instance.valId,
+      'myClassId': instance.myClassId,
+      '_id': instance.id,
       'val_bool': instance.valBool,
       'val_date': instance.valDate?.toIso8601String(),
       'val_string': instance.valString,
       'val_null': instance.valNull,
       'val_double': instance.valDouble,
       'val_arr_int': instance.valArrInt,
+      'val_arr_number': instance.valArrNumber,
       'value_arr_empty': instance.valueArrEmpty,
       'value_obj_empty': instance.valueObjEmpty,
       'val_arr_string': instance.valArrString,
@@ -56,7 +66,7 @@ Map<String, dynamic> _$MyClassToJson(MyClass instance) => <String, dynamic>{
 
 ValArrObj _$ValArrObjFromJson(Map<String, dynamic> json) => ValArrObj(
       dog: json['dog'] as String?,
-      cat: (json['cat'] as num?)?.toDouble(),
+      cat: json['cat'] as num?,
       hehe: json['hehe'] as bool?,
       test: json['test'] as String?,
     );
@@ -95,7 +105,7 @@ Map<String, dynamic> _$ValObjInObjToJson(ValObjInObj instance) =>
 
 Province _$ProvinceFromJson(Map<String, dynamic> json) => Province(
       country: json['country'] as String?,
-      population: (json['population'] as num?)?.toDouble(),
+      population: json['population'] as num?,
       something: (json['something'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
