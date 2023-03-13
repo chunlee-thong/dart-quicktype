@@ -1,3 +1,7 @@
+## [2.5.0] - 13 March 2023
+
+- add `json` field to class with zero field
+
 ## [2.4.0] - 27 February 2023
 
 - add generate json as comment setting

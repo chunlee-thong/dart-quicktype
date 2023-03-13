@@ -370,8 +370,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     this.emitLine("}");
   }
 
-  protected dartType(t: Type, withIssues: boolean = false, nullable: boolean = false): Sourcelike {
+  protected dartType(t: Type, withIssues: boolean = false): Sourcelike {
     let useNumber = this.customDartOption.useNum;
+
     return matchType<Sourcelike>(
       t,
       (_anyType) => maybeAnnotated(withIssues, anyTypeIssueAnnotation, "dynamic"),
@@ -578,13 +579,15 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       );
     }
 
+    var hasNoProperty = c.getProperties().size === 0;
+
     this.emitBlock(
       this.customDartOption.useEquatable
         ? ["class ", className, " extends Equatable"]
         : ["class ", className],
       () => {
-        if (c.getProperties().size === 0) {
-          this.emitLine(className, "();");
+        if (hasNoProperty) {
+          this.emitLine(className, "({required this.json});");
         } else {
           this.emitLine(className, "({");
           this.indent(() => {
@@ -615,6 +618,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               this.emitDescription(description);
             }
             let type = this.dartType(property.type, true);
+
             //
             const isDynamic = typeof type == "object" && type["kind"] === "annotated";
             const isAClass = typeof type == "object";
@@ -690,6 +694,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             "FromJson(json);"
           );
         } else {
+          if (hasNoProperty) {
+            this.emitLine("final Map<String,dynamic> json;");
+          }
           this.ensureBlankLine();
           this.emitLine(
             "factory ",
@@ -701,6 +708,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           );
           this.indent(() => {
             this.emitLine("return ", className, "(");
+            if (hasNoProperty) {
+              this.emitLine("json: json");
+            }
           });
           this.indent(() => {
             this.indent(() => {
