@@ -1,3 +1,7 @@
+## [2.5.1] - 15 March 2023
+
+- remove `copywith` from empty object
+
 ## [2.5.0] - 13 March 2023
 
 - add `json` field to class with zero field

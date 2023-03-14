@@ -651,7 +651,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           });
         }
 
-        if (this.customDartOption.generateCopyWith) {
+        if (this.customDartOption.generateCopyWith && !hasNoProperty) {
           this.ensureBlankLine();
           if (c.getProperties().size === 0) {
             this.emitLine(className, " copyWith(){");
