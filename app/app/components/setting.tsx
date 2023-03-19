@@ -1,13 +1,14 @@
 "use client";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "@firebase/auth";
+import { signOut } from "@firebase/auth";
 import { Avatar, Button, Checkbox, Paper, SimpleGrid } from "@mantine/core";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import useSettingStore from "../store/setting.store";
+import GoogleSignInButton from "./google_sign_in";
 
 const Setting = () => {
   const store = useSettingStore();
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   return (
     <div className="mb-4">
@@ -105,31 +106,25 @@ const Setting = () => {
       </SimpleGrid>
       <hr className="my-8"></hr>
       {user == null ? (
-        <Button
-          variant="filled"
-          className="mt-4 bg-red-500"
-          color="red"
-          onClick={async () => {
-            await signOut(auth);
-            const provider = new GoogleAuthProvider();
-            const user = await signInWithPopup(auth, provider);
-            console.log(user);
-          }}>
-          Login with Google
-        </Button>
+        <GoogleSignInButton />
       ) : (
         <Paper radius="md" withBorder p="lg">
           <Avatar src={user.photoURL} size={120} radius={120} mx="auto" />
           <p>{user.displayName}</p>
-          <p>{user.email}</p>
-          <Button
-            variant="filled"
-            fullWidth
-            className="mt-4 bg-red-500"
-            color="red"
-            onClick={() => signOut(auth)}>
-            Logout
-          </Button>
+          <p>{user.email ?? "Anonymous"}</p>
+
+          {user.isAnonymous ? (
+            <GoogleSignInButton />
+          ) : (
+            <Button
+              variant="filled"
+              fullWidth
+              className="mt-4 bg-red-500"
+              color="red"
+              onClick={() => signOut(auth)}>
+              Logout
+            </Button>
+          )}
         </Paper>
       )}
     </div>

@@ -19,7 +19,7 @@ const History = () => {
     <div className="flex flex-col h-[88vh]">
       <Title title="History" />
       {loading || history.loading ? (
-        <Loader className="flex flex-row justify-center align-items-center" />
+        <Loader className="p-8 text-black text-center" />
       ) : (
         <div className="rounded bg-white flex-grow-1 overflow-scroll">
           {history.data.length == 0 ? (
@@ -29,9 +29,7 @@ const History = () => {
               return (
                 <div
                   className="cursor-pointer bg-white hover:bg-gray-50"
-                  onClick={() => {
-                    generator.init(e);
-                  }}>
+                  onClick={() => generator.init(e)}>
                   <div className="p-2 text-black text-md">{e.className}</div>
                   <hr></hr>
                 </div>
