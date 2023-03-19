@@ -1,5 +1,10 @@
+// import express from "express";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { CustomDartTargetLanguage } from "./custom_dart_renderer";
+
+// const app = express();
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
 
 export type CustomDartOption = {
   generateToString: boolean;
@@ -46,3 +51,28 @@ export async function runQuickType(
   }
   return data;
 }
+
+// app.post("/api/generate", async (req, res) => {
+//   try {
+//     const { class_name, json_string, option } = req.body;
+//     var options =
+//       option ??
+//       <CustomDartOption>{
+//         generateToString: false,
+//         generateCopyWith: true,
+//         generateToJson: true,
+//         useDefaultValue: true,
+//         useSerializable: false,
+//         useEquatable: false,
+//         useNum: true,
+//         generateKey: true,
+//         generateJsonComment: true,
+//       };
+//     var result = await runQuickType(class_name, json_string, options);
+//     return res.status(200).json({ data: result });
+//   } catch (ex: any) {
+//     return res.status(400).json({ error: ex.toString() });
+//   }
+// });
+
+// app.listen(8001, () => console.log("Server is running"));

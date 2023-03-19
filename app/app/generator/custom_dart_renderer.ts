@@ -579,7 +579,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       );
     }
 
-    var hasNoProperty = c.getProperties().size === 0;
+    var hasNoProperty = c.getProperties().size === 0 && !this.customDartOption.useSerializable;
 
     this.emitBlock(
       this.customDartOption.useEquatable
@@ -589,18 +589,22 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         if (hasNoProperty) {
           this.emitLine(className, "({required this.json});");
         } else {
-          this.emitLine(className, "({");
-          this.indent(() => {
-            this.forEachClassProperty(c, "none", (name, _, _p) => {
-              this.emitLine(
-                this._oldOptions.requiredProperties ? "required " : "",
-                "this.",
-                name,
-                ","
-              );
+          if (c.getProperties().size !== 0) {
+            this.emitLine(className, "({");
+            this.indent(() => {
+              this.forEachClassProperty(c, "none", (name, _, _p) => {
+                this.emitLine(
+                  this._oldOptions.requiredProperties ? "required " : "",
+                  "this.",
+                  name,
+                  ","
+                );
+              });
             });
-          });
-          this.emitLine("});");
+            this.emitLine("});");
+          } else {
+            this.emitLine(className, "();");
+          }
           this.ensureBlankLine();
 
           this.forEachClassProperty(c, "none", (name, jsonName, property) => {

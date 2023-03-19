@@ -27,8 +27,7 @@ MyClass _$MyClassFromJson(Map<String, dynamic> json) => MyClass(
       valueArrEmpty: json['value_arr_empty'] as List<dynamic>?,
       valueObjEmpty: json['value_obj_empty'] == null
           ? null
-          : ValueObjEmpty.fromJson(
-              json['value_obj_empty'] as Map<String, dynamic>),
+          : Value.fromJson(json['value_obj_empty'] as Map<String, dynamic>),
       valArrString: (json['val_arr_string'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -42,6 +41,9 @@ MyClass _$MyClassFromJson(Map<String, dynamic> json) => MyClass(
       valArrObj: (json['val_arr_obj'] as List<dynamic>?)
           ?.map((e) => ValArrObj.fromJson(e as Map<String, dynamic>))
           .toList(),
+      valueEmpObj: json['value_emp_obj'] == null
+          ? null
+          : Value.fromJson(json['value_emp_obj'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MyClassToJson(MyClass instance) => <String, dynamic>{
@@ -62,6 +64,7 @@ Map<String, dynamic> _$MyClassToJson(MyClass instance) => <String, dynamic>{
       'val_obj': instance.valObj,
       'val_obj_in_obj': instance.valObjInObj,
       'val_arr_obj': instance.valArrObj,
+      'value_emp_obj': instance.valueEmpObj,
     };
 
 ValArrObj _$ValArrObjFromJson(Map<String, dynamic> json) => ValArrObj(
@@ -117,8 +120,6 @@ Map<String, dynamic> _$ProvinceToJson(Province instance) => <String, dynamic>{
       'something': instance.something,
     };
 
-ValueObjEmpty _$ValueObjEmptyFromJson(Map<String, dynamic> json) =>
-    ValueObjEmpty();
+Value _$ValueFromJson(Map<String, dynamic> json) => Value();
 
-Map<String, dynamic> _$ValueObjEmptyToJson(ValueObjEmpty instance) =>
-    <String, dynamic>{};
+Map<String, dynamic> _$ValueToJson(Value instance) => <String, dynamic>{};

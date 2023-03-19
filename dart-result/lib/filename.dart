@@ -177,7 +177,7 @@ class Province {
 
 @JsonSerializable()
 class Value {
-    Value({required this.json});
+    Value();
 
     factory Value.fromJson(Map<String, dynamic> json) => _$ValueFromJson(json);
 
