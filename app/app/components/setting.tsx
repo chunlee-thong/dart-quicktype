@@ -12,6 +12,7 @@ const Setting = () => {
 
   return (
     <div className="mb-4">
+      <hr className="mb-4"></hr>
       <SimpleGrid cols={2} spacing={8}>
         <Checkbox
           label="Generate toJSON method"

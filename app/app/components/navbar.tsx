@@ -40,6 +40,12 @@ export default function Navbar() {
         position="right"
         size={500}
         title="Settings"
+        styles={{
+          title: {
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+          },
+        }}
         overlayProps={{ opacity: 0.5, blur: 4 }}>
         {<Setting />}
       </Drawer>

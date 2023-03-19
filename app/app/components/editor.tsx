@@ -6,6 +6,7 @@ import "ace-builds/src-noconflict/ext-error_marker";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-dracula";
+import "ace-builds/webpack-resolver";
 
 import AceEditor from "react-ace";
 import useGeneratorStore from "../store/generator.store";
@@ -38,6 +39,9 @@ const Editor = () => {
         setOptions={{
           fontFamily: "Space Mono",
           fontSize: 12,
+          useWorker: false,
+          spellcheck: true,
+          showGutter: true,
         }}
       />
       <Button
