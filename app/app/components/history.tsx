@@ -28,6 +28,7 @@ const History = () => {
             history.data.map((e) => {
               return (
                 <div
+                  key={e.className}
                   className="cursor-pointer bg-white hover:bg-gray-50"
                   onClick={() => generator.init(e)}>
                   <div className="p-2 text-black text-md">{e.className}</div>

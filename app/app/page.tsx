@@ -22,7 +22,7 @@ export default function Home() {
     store.init();
   }, []);
   return (
-    <div className="flex flex-col">
+    <>
       <Navbar />
       <div className="px-4 py-2">
         <Grid className="h-screen">
@@ -37,6 +37,6 @@ export default function Home() {
           </Grid.Col>
         </Grid>
       </div>
-    </div>
+    </>
   );
 }
