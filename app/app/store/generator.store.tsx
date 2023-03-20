@@ -5,27 +5,31 @@ import { History, useHistoryStore } from "./history.store";
 
 interface GeneratorState {
   output: string;
-  value: string;
+  json: string;
   className: string;
   run: (setting: CustomDartOption) => void;
-  setValue: (value: string) => void;
-  setClassName: (value: string) => void;
   init: (value: History) => void;
+  update: (data: Partial<GeneratorState>) => void;
 }
 
 const useGeneratorStore = create<GeneratorState>((set, get) => ({
   output: "",
-  value: "",
+  json: "",
   className: "",
+  update: (data: Partial<GeneratorState>) => {
+    set({
+      ...data,
+    });
+  },
   run: async (setting: CustomDartOption) => {
     try {
-      const formatted = JSON.stringify(JSON.parse(get().value), null, "\t");
+      const formatted = JSON.stringify(JSON.parse(get().json), null, "\t");
       const result = await runQuickType(get().className, formatted, setting);
-      set({ output: result, value: formatted });
+      set({ output: result, json: formatted });
       const history = useHistoryStore.getState();
       history.save({
         className: get().className,
-        jsonString: get().value,
+        jsonString: get().json,
         output: result,
       });
     } catch (ex: any) {
@@ -35,14 +39,11 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
     }
   },
   init: (value: History) => {
-    get().setClassName(value.className);
-    get().setValue(value.jsonString);
-  },
-  setValue: (value: string) => {
-    set({ value: value });
-  },
-  setClassName: (value: string) => {
-    set({ className: value });
+    set({
+      className: value.className,
+      json: value.jsonString,
+      output: value.output,
+    });
   },
 }));
 

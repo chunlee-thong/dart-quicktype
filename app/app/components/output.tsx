@@ -21,17 +21,14 @@ const Output = () => {
         className="flex-grow flex-1"
         value={store.output}
         readOnly
-        setOptions={{
-          fontFamily: "Space Mono",
-          fontSize: 12,
-        }}
+        setOptions={{}}
       />
 
       <Button
         color="blue"
         fullWidth
-        variant="outline"
-        className="mt-4 bg-white"
+        variant="filled"
+        className="mt-4 bg-blue-500"
         size="md"
         onClick={() => {
           navigator.clipboard.writeText(store.output);

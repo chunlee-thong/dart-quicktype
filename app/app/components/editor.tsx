@@ -6,7 +6,6 @@ import "ace-builds/src-noconflict/ext-error_marker";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-dracula";
-import "ace-builds/webpack-resolver";
 
 import AceEditor from "react-ace";
 import useGeneratorStore from "../store/generator.store";
@@ -27,28 +26,22 @@ const Editor = () => {
         size="sm"
         value={generator.className}
         required
-        onChange={(event) => generator.setClassName(event.currentTarget.value)}
+        onChange={(event) => generator.update({ className: event.currentTarget.value })}
       />
       <AceEditor
         className="w-100 flex-grow-1 flex-1"
         mode="json"
         theme="dracula"
         width="100%"
-        value={generator.value}
-        onChange={(value) => generator.setValue(value)}
-        setOptions={{
-          fontFamily: "Space Mono",
-          fontSize: 12,
-          useWorker: false,
-          spellcheck: true,
-          showGutter: true,
-        }}
+        value={generator.json}
+        onChange={(value) => generator.update({ json: value })}
+        setOptions={{}}
       />
       <Button
         color="blue"
         fullWidth
-        variant="outline"
-        className="mt-4 bg-white"
+        variant="filled"
+        className="mt-4 bg-blue-500"
         size="md"
         onClick={async () => {
           generator.run(settingStore.setting);

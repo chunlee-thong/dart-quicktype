@@ -1,6 +1,7 @@
-import { Loader } from "@mantine/core";
+import { ActionIcon, Loader } from "@mantine/core";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { Trash } from "tabler-icons-react";
 import { auth } from "../firebase";
 import useGeneratorStore from "../store/generator.store";
 import { useHistoryStore } from "../store/history.store";
@@ -27,12 +28,15 @@ const History = () => {
           ) : (
             history.data.map((e) => {
               return (
-                <div
-                  key={e.className}
-                  className="cursor-pointer bg-white hover:bg-gray-50"
-                  onClick={() => generator.init(e)}>
-                  <div className="p-2 text-black text-md">{e.className}</div>
-                  <hr></hr>
+                <div key={e.className} className="cursor-pointer bg-white hover:bg-blue-200">
+                  <div className="px-4 py-1.5 text-black text-md flex flex-row justify-between">
+                    <p onClick={() => generator.init(e)} className="flex-grow font-semibold">
+                      {e.className}
+                    </p>
+                    <ActionIcon onClick={() => history.delete(e)}>
+                      <Trash className="text-red-400" />
+                    </ActionIcon>
+                  </div>
                 </div>
               );
             })

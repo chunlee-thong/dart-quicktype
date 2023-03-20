@@ -1,5 +1,6 @@
-import { User, signInAnonymously } from "@firebase/auth";
-import { addDoc, collection, getDocs, query, where } from "@firebase/firestore";
+import { User } from "@firebase/auth";
+import { collection, getDocs, query, setDoc, where } from "@firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { create } from "zustand";
 import { auth, db } from "../firebase";
 import useGeneratorStore from "./generator.store";
@@ -13,6 +14,7 @@ export interface History {
 }
 
 interface HistoryState {
+  delete(e: History): void;
   data: History[];
   loading: boolean;
   init: (user: User | undefined | null) => void;
@@ -22,13 +24,36 @@ interface HistoryState {
 export const useHistoryStore = create<HistoryState>((set, get) => ({
   data: [],
   loading: true,
+  delete: async (value: History) => {
+    const user = auth.currentUser;
+    var data = [...get().data];
+    const index = data.indexOf(value);
+    data.splice(index, 1);
+    if (user != null) {
+      const projectsRef = collection(db, "projects");
+      const projectId = `${projectsRef.path}/${user.uid}-${value.className}`;
+      deleteDoc(doc(db, projectId));
+    } else {
+      var json = JSON.stringify(data);
+      localStorage.setItem("history", json);
+    }
+    set({ data: data });
+  },
   save: async (value: History) => {
     const user = auth.currentUser;
     var data = [...get().data];
-    data.splice(0, 0, value);
+    var exist = data.find((e) => e.className == value.className);
+    if (!exist) {
+      data.splice(0, 0, value);
+    }
     if (user != null) {
-      var projectsRef = collection(db, "projects");
-      addDoc(projectsRef, { ...value, userId: user.uid, projectId: "" });
+      const projectsRef = collection(db, "projects");
+      const projectId = `${projectsRef.path}/${user.uid}-${value.className}`;
+      setDoc(doc(db, projectId), {
+        ...value,
+        userId: user.uid,
+        projectId: "",
+      });
     } else {
       var json = JSON.stringify(data);
       localStorage.setItem("history", json);
@@ -36,10 +61,6 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     set({ data: data });
   },
   init: async (user) => {
-    if (user == null) {
-      await signInAnonymously(auth);
-      return;
-    }
     var data;
     if (user != null) {
       var projectsRef = collection(db, "projects");
