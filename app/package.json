@@ -28,8 +28,8 @@
     "react-ace": "^10.1.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
+    "react-icons": "^4.8.0",
     "react-toastify": "^9.1.1",
-    "tabler-icons-react": "^1.56.0",
     "ts-node": "^10.0.0",
     "typescript": "5.0.2",
     "zustand": "^4.3.6"

@@ -1,16 +1,16 @@
 "use client";
 import { MantineProvider } from "@mantine/core";
-import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 import { GoogleAnalytics } from "nextjs-google-analytics";
+import Navbar from "./components/navbar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <title>Dart QuickType - Convert JSON to Dart</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <meta charSet="UTF-8" />
@@ -20,9 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name="description"
           content="Convert json to Dart model class with null safety support, Also support more feature such as History and setting."
         />
-      </Head>
+      </head>
 
       <body>
+        <Navbar />
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS

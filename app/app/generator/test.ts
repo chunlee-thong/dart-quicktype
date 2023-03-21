@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { runQuickType } from ".";
 
 async function test() {
-  const jsonString = await fs.readFileSync("dart-json.json", "utf8");
+  const jsonString = await fs.readFileSync("../dart-json.json", "utf8");
   const result = await runQuickType("MyClass", jsonString, {
     generateToString: true,
     generateCopyWith: true,
@@ -14,7 +14,7 @@ async function test() {
     generateKey: true,
     generateJsonComment: true,
   });
-  fs.writeFileSync("dart-result/lib/output.dart", result);
+  fs.writeFileSync("../dart-result/lib/output.dart", result);
 
   const result2 = await runQuickType("MyClass", jsonString, {
     generateToString: true,

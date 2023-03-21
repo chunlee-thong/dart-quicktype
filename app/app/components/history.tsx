@@ -1,7 +1,7 @@
 import { ActionIcon, Loader } from "@mantine/core";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Trash } from "tabler-icons-react";
+import { IoTrashBinOutline } from "react-icons/io5";
 import { auth } from "../firebase";
 import useGeneratorStore from "../store/generator.store";
 import { useHistoryStore } from "../store/history.store";
@@ -18,7 +18,19 @@ const History = () => {
   }, [user, loading]);
   return (
     <div className="flex flex-col h-[88vh]">
-      <Title title="History" />
+      <div className="flex flex-row justify-between">
+        <Title title="History" />
+        {/* <Select
+          placeholder="Project"
+          size="xs"
+          data={[
+            { value: "react", label: "React" },
+            { value: "ng", label: "Angular" },
+            { value: "svelte", label: "Svelte" },
+            { value: "vue", label: "Vue" },
+          ]}
+        /> */}
+      </div>
       {loading || history.loading ? (
         <Loader className="p-8 text-black text-center" />
       ) : (
@@ -34,7 +46,7 @@ const History = () => {
                       {e.className}
                     </p>
                     <ActionIcon onClick={() => history.delete(e)}>
-                      <Trash className="text-red-400" />
+                      <IoTrashBinOutline className="text-red-400" />
                     </ActionIcon>
                   </div>
                 </div>

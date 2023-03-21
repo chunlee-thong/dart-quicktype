@@ -35,6 +35,14 @@
     {
       "test": "test",
       "cat": 23.3
+    },
+    {
+      "latitude": 32.3,
+      "longitude": 32.3
+    },
+    {
+      "lat": 32.3,
+      "lng": 32.3
     }
   ],
   "value_emp_obj": {}

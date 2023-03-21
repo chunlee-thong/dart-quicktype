@@ -569,6 +569,21 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     );
   }
 
+  protected numTypeReplacement(type: Sourcelike, jsonName: string): Sourcelike {
+    if (type == "num") {
+      if (jsonName.includes("id")) {
+        return "int";
+      }
+      if (jsonName.includes("lat") || jsonName.includes("latitude")) {
+        return "double";
+      }
+      if (jsonName.includes("lng") || jsonName.includes("longitude")) {
+        return "double";
+      }
+    }
+    return type;
+  }
+
   protected emitClassDefinition(c: ClassType, className: Name): void {
     this.emitDescription(this.descriptionForType(c));
     if (this.customDartOption.useSerializable) {
@@ -637,11 +652,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             } else {
               letBeNull = this.customDartOption.useDefaultValue == false;
             }
-
-            if (type == "num" && jsonName.includes("id")) {
-              type = "int";
-            }
-
+            type = this.numTypeReplacement(type, jsonName);
             this.emitLine(
               this._oldOptions.finalProperties ? "final " : "",
               type,
@@ -664,9 +675,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             this.indent(() => {
               this.forEachClassProperty(c, "none", (name, jsonName, _p) => {
                 let type = this.dartType(_p.type, true, true);
-                if (type == "num" && jsonName.includes("id")) {
-                  type = "int";
-                }
+                type = this.numTypeReplacement(type, jsonName);
                 this.emitLine(type, "? ", name, ",");
               });
             });
