@@ -14,8 +14,8 @@ export default function Navbar() {
   return (
     <nav className="flex sm:flex-row text-center sm:text-left sm:justify-between bg-black py-2 px-4 w-full">
       <div>
-        <a href="/" className="text-2xl font-semibold no-underline text-white mr-8">
-          {`Dart Quicktype`}
+        <a href="/" className="text-2xl no-underline font-medium text-white mr-8">
+          Dart Quicktype
         </a>
       </div>
       <div className="flex flex-row">

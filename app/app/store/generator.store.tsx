@@ -31,6 +31,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
         className: get().className,
         jsonString: get().json,
         output: result,
+        active: true,
       });
     } catch (ex: any) {
       toast(ex.toString(), {
