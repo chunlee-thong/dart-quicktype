@@ -1,6 +1,6 @@
 import { User } from "@firebase/auth";
 import { collection, getDocs, query, setDoc, where } from "@firebase/firestore";
-import { deleteDoc, doc } from "firebase/firestore";
+import { CollectionReference, DocumentData, deleteDoc, doc } from "firebase/firestore";
 import { create } from "zustand";
 import { auth, db } from "../firebase";
 import useGeneratorStore from "./generator.store";
@@ -19,19 +19,26 @@ interface HistoryState {
   loading: boolean;
   init: (user: User | undefined | null) => void;
   save: (value: History) => void;
+  collectionRef: () => CollectionReference<DocumentData>;
 }
 
 export const useHistoryStore = create<HistoryState>((set, get) => ({
   data: [],
   loading: true,
+  collectionRef: () => {
+    const env = process.env.NODE_ENV;
+    console.log(env);
+    const table = env == "development" ? "projects_dev" : "projects";
+    const projectsRef = collection(db, table);
+    return projectsRef;
+  },
   delete: async (value: History) => {
     const user = auth.currentUser;
     var data = [...get().data];
     const index = data.indexOf(value);
     data.splice(index, 1);
     if (user != null) {
-      const projectsRef = collection(db, "projects");
-      const projectId = `${projectsRef.path}/${user.uid}-${value.className}`;
+      const projectId = `${get().collectionRef().path}/${user.uid}-${value.className}`;
       deleteDoc(doc(db, projectId));
     } else {
       var json = JSON.stringify(data);
@@ -47,8 +54,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
       data.splice(0, 0, value);
     }
     if (user != null) {
-      const projectsRef = collection(db, "projects");
-      const projectId = `${projectsRef.path}/${user.uid}-${value.className}`;
+      const projectId = `${get().collectionRef().path}/${user.uid}-${value.className}`;
       setDoc(doc(db, projectId), {
         ...value,
         userId: user.uid,
@@ -63,8 +69,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   init: async (user) => {
     var data;
     if (user != null) {
-      var projectsRef = collection(db, "projects");
-      const q = query(projectsRef, where("userId", "==", user.uid));
+      const q = query(get().collectionRef(), where("userId", "==", user.uid));
       var res = await getDocs(q);
       data = res.docs.map((e) => e.data());
     } else {

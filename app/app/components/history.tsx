@@ -36,7 +36,7 @@ const History = () => {
       ) : (
         <div className="rounded bg-white flex-grow-1 overflow-scroll">
           {history.data.length == 0 ? (
-            <h1 className="p-8 text-blue-500 text-center text-sm">No data!</h1>
+            <h1 className="p-8 text-red-500 text-center text-sm">No data!</h1>
           ) : (
             history.data.map((e) => {
               return (
