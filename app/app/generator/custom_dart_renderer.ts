@@ -582,13 +582,14 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected numTypeReplacement(type: Sourcelike, jsonName: string): Sourcelike {
     if (type == "num") {
-      if (jsonName.includes("id")) {
+      var jsonNameParts = jsonName.split("_");
+      if (jsonNameParts.includes("id")) {
         return "int";
       }
-      if (jsonName.includes("lat") || jsonName.includes("latitude")) {
+      if (jsonNameParts.includes("lat") || jsonName.includes("latitude")) {
         return "double";
       }
-      if (jsonName.includes("lng") || jsonName.includes("longitude")) {
+      if (jsonNameParts.includes("lng") || jsonName.includes("longitude")) {
         return "double";
       }
     }

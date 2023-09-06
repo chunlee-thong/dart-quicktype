@@ -83,7 +83,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     set({ models: data });
   },
   init: async (user) => {
-    var models;
+    var models: History[];
     var projects: Project[];
     if (user != null) {
       const projectQuery = query(get().collectionRef("projects"), where("userId", "==", user.uid));
@@ -93,7 +93,21 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         where("userId", "==", user.uid),
         where("active", "==", true)
       );
-      models = (await getDocs(q)).docs.map((e) => e.data());
+      models = (await getDocs(q)).docs.map((e) => {
+        var model: History;
+        const { className, active, jsonString, output, projectId, userId, options } = e.data();
+        model = {
+          className,
+          active,
+          jsonString,
+          ///New field in 3.0.0
+          options: options ?? { ignoreClasses: "", headers: "" },
+          output,
+          userId,
+          projectId,
+        };
+        return model;
+      });
     } else {
       var result = localStorage.getItem("history") ?? "[]";
       models = JSON.parse(result);
