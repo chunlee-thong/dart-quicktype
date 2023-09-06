@@ -1,3 +1,7 @@
+## [3.0.0] - 6 Sept 2023
+
+- Add class options
+
 ## [2.5.1] - 15 March 2023
 
 - remove `copywith` from empty object

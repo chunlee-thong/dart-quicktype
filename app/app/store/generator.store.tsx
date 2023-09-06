@@ -1,12 +1,13 @@
 import { toast } from "react-toastify";
 import { create } from "zustand";
-import { CustomDartOption, runQuickType } from "../generator";
+import { ClassOption, CustomDartOption, runQuickType } from "../generator";
 import { History, useHistoryStore } from "./history.store";
 
 interface GeneratorState {
   output: string;
   json: string;
   className: string;
+  classOptions: ClassOption;
   run: (setting: CustomDartOption) => void;
   init: (value: History) => void;
   update: (data: Partial<GeneratorState>) => void;
@@ -16,6 +17,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
   output: "",
   json: "",
   className: "",
+  classOptions: { ignoreClasses: "", headers: "" },
   update: (data: Partial<GeneratorState>) => {
     set({
       ...data,
@@ -24,13 +26,14 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
   run: async (setting: CustomDartOption) => {
     try {
       const formatted = JSON.stringify(JSON.parse(get().json), null, "\t");
-      const result = await runQuickType(get().className, formatted, setting);
+      const result = await runQuickType(get().className, formatted, setting, get().classOptions);
       set({ output: result, json: formatted });
       const history = useHistoryStore.getState();
       history.save({
         className: get().className,
         jsonString: get().json,
         output: result,
+        options: get().classOptions,
         active: true,
       });
     } catch (ex: any) {
@@ -44,6 +47,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
       className: value.className,
       json: value.jsonString,
       output: value.output,
+      classOptions: value.options,
     });
   },
 }));

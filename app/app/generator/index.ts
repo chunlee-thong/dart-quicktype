@@ -18,10 +18,16 @@ export type CustomDartOption = {
   generateJsonComment: boolean;
 };
 
+export type ClassOption = {
+  ignoreClasses: string;
+  headers: string;
+};
+
 export async function runQuickType(
   className: string,
   jsonString: string,
-  dartOptions: CustomDartOption
+  dartOptions: CustomDartOption,
+  classOptions: ClassOption
 ): Promise<string> {
   const jsonInput = jsonInputForTargetLanguage("dart");
   await jsonInput.addSource({
@@ -32,7 +38,7 @@ export async function runQuickType(
   const inputData = new InputData();
   inputData.addInput(jsonInput);
 
-  const dartLang = new CustomDartTargetLanguage(dartOptions);
+  const dartLang = new CustomDartTargetLanguage(dartOptions, classOptions);
   const { lines: result } = await quicktype({
     lang: dartLang,
     inputData,

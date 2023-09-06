@@ -3,12 +3,14 @@ import { collection, getDocs, query, setDoc, where } from "@firebase/firestore";
 import { CollectionReference, DocumentData, doc, updateDoc } from "firebase/firestore";
 import { create } from "zustand";
 import { auth, db } from "../firebase";
+import { ClassOption } from "../generator";
 import useGeneratorStore from "./generator.store";
 
 export interface History {
   className: string;
   jsonString: string;
   output: string;
+  options: ClassOption;
   projectId?: string | undefined;
   userId?: string | undefined;
   active: boolean;

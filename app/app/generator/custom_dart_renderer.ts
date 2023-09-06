@@ -45,7 +45,7 @@ import {
   utf16LegalizeCharacters,
 } from "quicktype-core/dist/support/Strings";
 import { defined } from "quicktype-core/dist/support/Support";
-import { CustomDartOption } from ".";
+import { ClassOption, CustomDartOption } from ".";
 
 export const quicktypeDartOptions = {
   justTypes: new BooleanOption("just-types", "Types only", false),
@@ -70,9 +70,11 @@ export const quicktypeDartOptions = {
 
 export class CustomDartTargetLanguage extends TargetLanguage {
   customDartOptions: CustomDartOption;
-  constructor(customDartOptions: CustomDartOption) {
+  classOptions: ClassOption;
+  constructor(customDartOptions: CustomDartOption, classOptions: ClassOption) {
     super("Dart", ["dart"], "dart");
     this.customDartOptions = customDartOptions;
+    this.classOptions = classOptions;
   }
 
   protected getOptions(): Option<any>[] {
@@ -106,7 +108,13 @@ export class CustomDartTargetLanguage extends TargetLanguage {
     untypedOptionValues: { [name: string]: any }
   ): DartRenderer {
     const options = getOptionValues(quicktypeDartOptions, untypedOptionValues);
-    return new CustomDartRenderer(this, renderContext, options, this.customDartOptions);
+    return new CustomDartRenderer(
+      this,
+      renderContext,
+      options,
+      this.customDartOptions,
+      this.classOptions
+    );
   }
 }
 
@@ -241,16 +249,19 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   private readonly _topLevelDependents = new Map<Name, TopLevelDependents>();
   private readonly _enumValues = new Map<EnumType, Name>();
 
-  private readonly customDartOption: CustomDartOption;
+  private readonly customDartOptions: CustomDartOption;
+  private readonly classOptions: ClassOption;
 
   constructor(
     targetLanguage: TargetLanguage,
     renderContext: RenderContext,
     private readonly _oldOptions: OptionValues<typeof quicktypeDartOptions>,
-    customDartOption: CustomDartOption
+    customDartOptions: CustomDartOption,
+    classOptions: ClassOption
   ) {
     super(targetLanguage, renderContext);
-    this.customDartOption = customDartOption;
+    this.customDartOptions = customDartOptions;
+    this.classOptions = classOptions;
   }
 
   protected forbiddenNamesForGlobalNamespace(): string[] {
@@ -371,7 +382,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected dartType(t: Type, withIssues: boolean = false): Sourcelike {
-    let useNumber = this.customDartOption.useNum;
+    let useNumber = this.customDartOptions.useNum;
 
     return matchType<Sourcelike>(
       t,
@@ -477,7 +488,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         const type = this.dartType(t, true);
         let isAClass = false;
         let hasDefaultValue =
-          !Array.isArray(type) && type !== "DateTime" && this.customDartOption.useDefaultValue;
+          !Array.isArray(type) && type !== "DateTime" && this.customDartOptions.useDefaultValue;
         let defaultValue = null;
         if (typeof type == "object") {
           let isArray = Array.isArray(type);
@@ -585,19 +596,27 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected emitClassDefinition(c: ClassType, className: Name): void {
+    var ignoreClasses = this.classOptions.ignoreClasses.split(",");
+
+    var jsonName = className.firstProposedName();
+    const realClassName = className.namingFunction.nameStyle(jsonName);
+
+    if (ignoreClasses.includes(realClassName)) {
+      return;
+    }
     this.emitDescription(this.descriptionForType(c));
-    if (this.customDartOption.useSerializable) {
+    if (this.customDartOptions.useSerializable) {
       this.emitLine(
         "@JsonSerializable(",
-        !this.customDartOption.generateToJson ? "createToJson: false" : "",
+        !this.customDartOptions.generateToJson ? "createToJson: false" : "",
         ")"
       );
     }
 
-    var hasNoProperty = c.getProperties().size === 0 && !this.customDartOption.useSerializable;
+    var hasNoProperty = c.getProperties().size === 0 && !this.customDartOptions.useSerializable;
 
     this.emitBlock(
-      this.customDartOption.useEquatable
+      this.customDartOptions.useEquatable
         ? ["class ", className, " extends Equatable"]
         : ["class ", className],
       () => {
@@ -626,7 +645,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             const description = this.descriptionForClassProperty(c, jsonName);
 
             if (
-              this.customDartOption.useSerializable &&
+              this.customDartOptions.useSerializable &&
               jsonName !== name.namingFunction.nameStyle(jsonName)
             ) {
               this.ensureBlankLine();
@@ -645,12 +664,12 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             const isArray = Array.isArray(type);
 
             let letBeNull = false;
-            if (isDynamic || (!this.customDartOption.useSerializable && isArray)) {
+            if (isDynamic || (!this.customDartOptions.useSerializable && isArray)) {
               letBeNull = false;
             } else if (isAClass || isDateTime) {
               letBeNull = true;
             } else {
-              letBeNull = this.customDartOption.useDefaultValue == false;
+              letBeNull = this.customDartOptions.useDefaultValue == false;
             }
             type = this.numTypeReplacement(type, jsonName);
             this.emitLine(
@@ -660,13 +679,13 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               name,
               ";"
             );
-            if (this.customDartOption.generateKey) {
+            if (this.customDartOptions.generateKey) {
               this.emitLine(`static const String `, name, `Key`, ` = "${jsonName}";`, "\n");
             }
           });
         }
 
-        if (this.customDartOption.generateCopyWith && !hasNoProperty) {
+        if (this.customDartOptions.generateCopyWith && !hasNoProperty) {
           this.ensureBlankLine();
           if (c.getProperties().size === 0) {
             this.emitLine(className, " copyWith(){");
@@ -694,7 +713,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.ensureBlankLine();
         }
 
-        if (this.customDartOption.useSerializable) {
+        if (this.customDartOptions.useSerializable) {
           this.ensureBlankLine();
           this.emitLine(
             "factory ",
@@ -743,8 +762,8 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine("}");
         }
         this.ensureBlankLine();
-        if (this.customDartOption.generateToJson) {
-          if (this.customDartOption.useSerializable) {
+        if (this.customDartOptions.generateToJson) {
+          if (this.customDartOptions.useSerializable) {
             this.ensureBlankLine();
 
             this.emitLine(
@@ -772,7 +791,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         }
         this.ensureBlankLine();
         //Generate toString method
-        if (this.customDartOption.generateToString) {
+        if (this.customDartOptions.generateToString) {
           this.ensureBlankLine();
           this.emitLine("@override");
           this.emitLine("String toString(){");
@@ -787,7 +806,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine("}");
         }
         //Generate Equatable Props
-        if (this.customDartOption.useEquatable) {
+        if (this.customDartOptions.useEquatable) {
           let data = "";
           this.ensureBlankLine();
           this.emitLine("@override");
@@ -801,7 +820,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.emitLine(data, "];");
         }
 
-        if (this.customDartOption.generateJsonComment) {
+        if (this.customDartOptions.generateJsonComment) {
           this.ensureBlankLine();
         }
       }
@@ -850,11 +869,16 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     if (!this._oldOptions.justTypes && !this._oldOptions.codersInClass) {
     }
 
-    if (this.customDartOption.useEquatable) {
+    const headers = this.classOptions.headers;
+    if (headers.trim().length > 0) {
+      this.emitLine(headers);
+    }
+
+    if (this.customDartOptions.useEquatable) {
       this.emitLine("import 'package:equatable/equatable.dart';");
     }
 
-    if (this.customDartOption.useSerializable) {
+    if (this.customDartOptions.useSerializable) {
       this.emitLine("import 'package:json_annotation/json_annotation.dart';");
       this.ensureBlankLine();
       this.emitLine("part '", this._oldOptions.partName, ".g.dart';"); //todo print part
