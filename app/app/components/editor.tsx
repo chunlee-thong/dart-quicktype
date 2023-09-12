@@ -1,12 +1,14 @@
 "use client";
 import { Accordion, Button, Space, TextInput, Textarea } from "@mantine/core";
+import "ace-builds";
 import "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/ext-error_marker";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-dracula";
-
+import "ace-builds/webpack-resolver";
 import AceEditor from "react-ace";
+
 import useGeneratorStore from "../store/generator.store";
 import useSettingStore from "../store/setting.store";
 import SmTitle from "./sm_title";

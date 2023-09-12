@@ -1,5 +1,5 @@
 # Dart QuickType
-### version: 3.0.0
+### version: 3.1.0
 
 A custom implemenation of JSON to Dart model class from [QuickType](https://github.com/quicktype/quicktype).
 

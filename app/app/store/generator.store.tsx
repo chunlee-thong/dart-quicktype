@@ -8,6 +8,7 @@ interface GeneratorState {
   json: string;
   className: string;
   classOptions: ClassOption;
+  history?: History | null;
   run: (setting: CustomDartOption) => void;
   init: (value: History) => void;
   update: (data: Partial<GeneratorState>) => void;
@@ -29,7 +30,9 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
       const result = await runQuickType(get().className, formatted, setting, get().classOptions);
       set({ output: result, json: formatted });
       const history = useHistoryStore.getState();
-      history.save({
+      const id = get().className === get().history?.className ? get().history?.id : null;
+      history.saveHistory({
+        id: id,
         className: get().className,
         jsonString: get().json,
         output: result,
@@ -48,6 +51,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
       json: value.jsonString,
       output: value.output,
       classOptions: value.options,
+      history: value,
     });
   },
 }));

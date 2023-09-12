@@ -1,3 +1,7 @@
+
+## [3.1.0] - 12 Sept 2023
+
+- Add project
 ## [3.0.0] - 6 Sept 2023
 
 - Add class options
