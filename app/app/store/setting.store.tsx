@@ -1,4 +1,6 @@
+import { logEvent } from "firebase/analytics";
 import { create } from "zustand";
+import { analytics } from "../firebase";
 import { CustomDartOption } from "../generator";
 
 interface SettingType {
@@ -22,7 +24,9 @@ var defaultSetting: CustomDartOption = {
 const useSettingStore = create<SettingType>((set) => ({
   setting: defaultSetting,
   updateValue: (value: CustomDartOption) => {
-    console.log(value);
+    logEvent(analytics, "update_setting", {
+      value: value,
+    });
     set({ setting: value });
     localStorage.setItem("setting", JSON.stringify(value));
   },

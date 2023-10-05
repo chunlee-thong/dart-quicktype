@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
-import { GoogleAnalytics } from "nextjs-google-analytics";
 import Navbar from "./components/navbar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -34,7 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </MantineProvider>
         <ToastContainer />
-        <GoogleAnalytics trackPageViews />
       </body>
     </html>
   );
