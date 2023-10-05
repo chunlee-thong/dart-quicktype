@@ -1,7 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
 import { Button } from "@mantine/core";
-import { logEvent } from "firebase/analytics";
-import { analytics, auth } from "../firebase";
+import { event } from "nextjs-google-analytics";
+import { auth } from "../firebase";
 
 const GoogleSignInButton = () => {
   return (
@@ -12,7 +12,7 @@ const GoogleSignInButton = () => {
       onClick={async () => {
         const provider = new GoogleAuthProvider();
         const user = await signInWithPopup(auth, provider);
-        logEvent(analytics, "login", {
+        event("login", {
           provider: "google",
         });
         console.log(user);

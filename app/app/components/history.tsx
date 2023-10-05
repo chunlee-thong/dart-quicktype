@@ -1,9 +1,9 @@
 import { ActionIcon, Loader, Select } from "@mantine/core";
-import { logEvent } from "firebase/analytics";
+import { event } from "nextjs-google-analytics";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { IoTrashBinOutline } from "react-icons/io5";
-import { analytics, auth } from "../firebase";
+import { auth } from "../firebase";
 import useGeneratorStore from "../store/generator.store";
 import { Project, useHistoryStore } from "../store/history.store";
 import Title from "./title";
@@ -46,7 +46,7 @@ const History = () => {
               getCreateLabel={(query) => `+ Create ${query}`}
               onCreate={(query) => {
                 const item = { value: query, label: query };
-                logEvent(analytics, "create_project", {});
+                event("create_project");
                 onSaveProject(query);
                 return item;
               }}

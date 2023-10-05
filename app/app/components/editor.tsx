@@ -9,8 +9,7 @@ import "ace-builds/src-noconflict/theme-dracula";
 import "ace-builds/webpack-resolver";
 import AceEditor from "react-ace";
 
-import { logEvent } from "firebase/analytics";
-import { analytics } from "../firebase";
+import { event } from "nextjs-google-analytics";
 import useGeneratorStore from "../store/generator.store";
 import useSettingStore from "../store/setting.store";
 import SmTitle from "./sm_title";
@@ -81,7 +80,7 @@ const Editor = () => {
         className="mt-4 bg-blue-500"
         size="md"
         onClick={async () => {
-          logEvent(analytics, "convert", {});
+          event("convert");
           generator.run(settingStore.setting);
         }}>
         Convert

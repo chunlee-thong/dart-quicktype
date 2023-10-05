@@ -1,6 +1,5 @@
-import { logEvent } from "firebase/analytics";
+import { event } from "nextjs-google-analytics";
 import { create } from "zustand";
-import { analytics } from "../firebase";
 import { CustomDartOption } from "../generator";
 
 interface SettingType {
@@ -24,8 +23,8 @@ var defaultSetting: CustomDartOption = {
 const useSettingStore = create<SettingType>((set) => ({
   setting: defaultSetting,
   updateValue: (value: CustomDartOption) => {
-    logEvent(analytics, "update_setting", {
-      value: value,
+    event("update_setting", {
+      setting: value,
     });
     set({ setting: value });
     localStorage.setItem("setting", JSON.stringify(value));
