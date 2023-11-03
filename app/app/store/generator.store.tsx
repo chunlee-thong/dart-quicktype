@@ -18,7 +18,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
   output: "",
   json: "",
   className: "",
-  classOptions: { ignoreClasses: "", headers: "" },
+  classOptions: { ignoreClasses: "", headers: "", classNameReplace: "" },
   update: (data: Partial<GeneratorState>) => {
     set({
       ...data,

@@ -471,7 +471,22 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.fromDynamicExpression(arrayType.items, "x"),
           false
         ),
-      (classType) => [this.nameForNamedType(classType), ".", this.fromJson, "(", dynamic, ")"],
+      (classType) => {
+        let className = this.nameForNamedType(classType);
+        let type = this.dartType(t, true);
+        let isAClass = false;
+        if (typeof type == "object") {
+          let isArray = Array.isArray(type);
+          isAClass = !isArray && type["kind"] !== "annotated";
+        }
+        if (isAClass) {
+          const jsonName = dynamic[0][1];
+          if (jsonName) {
+            className = this.checkClassNameReplacement(jsonName);
+          }
+        }
+        return [className, ".", this.fromJson, "(", dynamic, ")"];
+      },
       (mapType) =>
         this.mapMap(
           this.dartType(mapType.values),
@@ -485,17 +500,18 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           return dynamic;
         }
 
-        const type = this.dartType(t, true);
+        let type = this.dartType(t, true);
         let isAClass = false;
-        let hasDefaultValue =
+        const hasDefaultValue =
           !Array.isArray(type) && type !== "DateTime" && this.customDartOptions.useDefaultValue;
         let defaultValue = null;
         if (typeof type == "object") {
           let isArray = Array.isArray(type);
           isAClass = !isArray && type["kind"] !== "annotated";
         }
+
         if (hasDefaultValue) {
-          defaultValue = this.getDefaultValueForType(type);
+          defaultValue = this.getDefaultValueForType(type.toString());
         }
         return isAClass
           ? [dynamic, " == null ? null : ", this.fromDynamicExpression(maybeNullable, dynamic)]
@@ -513,23 +529,6 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         }
       }
     );
-  }
-
-  protected getDefaultValueForType(type): any {
-    switch (type) {
-      case "int":
-        return 0;
-      case "num":
-        return 0;
-      case "double":
-        return `0.0`;
-      case "String":
-        return `""`;
-      case "bool":
-        return false;
-      default:
-        "";
-    }
   }
 
   protected toDynamicExpression(t: Type, ...dynamic: Sourcelike[]): Sourcelike {
@@ -580,6 +579,23 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     );
   }
 
+  protected getDefaultValueForType(type): any {
+    switch (type) {
+      case "int":
+        return 0;
+      case "num":
+        return 0;
+      case "double":
+        return `0.0`;
+      case "String":
+        return `""`;
+      case "bool":
+        return false;
+      default:
+        "";
+    }
+  }
+
   protected numTypeReplacement(type: Sourcelike, jsonName: string): Sourcelike {
     if (type == "num") {
       var jsonNameParts = jsonName.split("_");
@@ -594,6 +610,20 @@ export class CustomDartRenderer extends ConvenienceRenderer {
       }
     }
     return type;
+  }
+
+  protected checkClassNameReplacement(jsonName: string): string {
+    var text = this.classOptions.classNameReplace;
+    var parts = text.split(",");
+    var className = dartNameStyle(true, false, jsonName);
+
+    for (var part of parts) {
+      var chunks = part.split("=");
+      if (chunks[0] == className) {
+        className = chunks[1];
+      }
+    }
+    return className;
   }
 
   protected emitClassDefinition(c: ClassType, className: Name): void {
@@ -673,6 +703,10 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               letBeNull = this.customDartOptions.useDefaultValue == false;
             }
             type = this.numTypeReplacement(type, jsonName);
+            if (isAClass && !isArray && !isDynamic) {
+              type = this.checkClassNameReplacement(jsonName);
+            }
+
             this.emitLine(
               this._oldOptions.finalProperties ? "final " : "",
               type,
@@ -696,6 +730,13 @@ export class CustomDartRenderer extends ConvenienceRenderer {
               this.forEachClassProperty(c, "none", (name, jsonName, _p) => {
                 let type = this.dartType(_p.type, true, true);
                 type = this.numTypeReplacement(type, jsonName);
+                const isAClass = typeof type == "object";
+                const isDynamic = typeof type == "object" && type["kind"] === "annotated";
+                const isArray = Array.isArray(type);
+
+                if (isAClass && !isArray && !isDynamic) {
+                  type = this.checkClassNameReplacement(jsonName);
+                }
                 this.emitLine(type, "? ", name, ",");
               });
             });
@@ -721,7 +762,6 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             className,
             ".",
             this.fromJson,
-            //TODO: make this json nullable
             "(Map<String, dynamic> json) => _$",
             className,
             "FromJson(json);"
@@ -731,14 +771,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             this.emitLine("final Map<String,dynamic> json;");
           }
           this.ensureBlankLine();
-          this.emitLine(
-            "factory ",
-            className,
-            ".",
-            this.fromJson,
-            //TODO: make this json nullable
-            "(Map<String, dynamic> json){ "
-          );
+          this.emitLine("factory ", className, ".", this.fromJson, "(Map<String, dynamic> json){ ");
           this.indent(() => {
             this.emitLine("return ", className, "(");
             if (hasNoProperty) {
@@ -748,10 +781,11 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           this.indent(() => {
             this.indent(() => {
               this.forEachClassProperty(c, "none", (name, jsonName, property) => {
+                let type = property.type;
                 this.emitLine(
                   name,
                   ": ",
-                  this.fromDynamicExpression(property.type, 'json["', stringEscape(jsonName), '"]'),
+                  this.fromDynamicExpression(type, 'json["', stringEscape(jsonName), '"]'),
                   ","
                 );
               });
@@ -882,7 +916,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     if (this.customDartOptions.useSerializable) {
       this.emitLine("import 'package:json_annotation/json_annotation.dart';");
       this.ensureBlankLine();
-      this.emitLine("part '", this._oldOptions.partName, ".g.dart';"); //todo print part
+      this.emitLine("part '", this._oldOptions.partName, ".g.dart';");
     }
 
     this.forEachNamedType(

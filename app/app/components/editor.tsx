@@ -61,6 +61,19 @@ const Editor = () => {
                 });
               }}
             />
+            <Space h={"md"} />
+            <Textarea
+              className="font-bold text-white text-2xl"
+              placeholder="Class name replacement"
+              value={generator.classOptions.classNameReplace}
+              required
+              onChange={(event) => {
+                generator.classOptions.classNameReplace = event.target.value;
+                generator.update({
+                  classOptions: generator.classOptions,
+                });
+              }}
+            />
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>

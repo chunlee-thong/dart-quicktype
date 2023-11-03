@@ -21,6 +21,7 @@ export type CustomDartOption = {
 export type ClassOption = {
   ignoreClasses: string;
   headers: string;
+  classNameReplace: string;
 };
 
 export async function runQuickType(
