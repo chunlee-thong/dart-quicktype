@@ -482,7 +482,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
         if (isAClass) {
           const jsonName = dynamic[0][1];
           if (jsonName) {
-            className = this.checkClassNameReplacement(jsonName);
+            className = this.checkClassNameReplacement(jsonName, className);
           }
         }
         return [className, ".", this.fromJson, "(", dynamic, ")"];
@@ -612,9 +612,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
     return type;
   }
 
-  protected checkClassNameReplacement(jsonName: string): string {
+  protected checkClassNameReplacement(jsonName: string, type: Sourcelike) {
     var text = this.classOptions.classNameReplace;
-    if (text) {
+    if (text !== "") {
       var parts = text.split(",");
       var className = dartNameStyle(true, false, jsonName);
 
@@ -624,8 +624,9 @@ export class CustomDartRenderer extends ConvenienceRenderer {
           className = chunks[1];
         }
       }
+      return className;
     }
-    return className;
+    return type;
   }
 
   protected emitClassDefinition(c: ClassType, className: Name): void {
@@ -706,7 +707,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
             }
             type = this.numTypeReplacement(type, jsonName);
             if (isAClass && !isArray && !isDynamic) {
-              type = this.checkClassNameReplacement(jsonName);
+              type = this.checkClassNameReplacement(jsonName, type);
             }
 
             this.emitLine(
@@ -737,7 +738,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
                 const isArray = Array.isArray(type);
 
                 if (isAClass && !isArray && !isDynamic) {
-                  type = this.checkClassNameReplacement(jsonName);
+                  type = this.checkClassNameReplacement(jsonName, type);
                 }
                 this.emitLine(type, "? ", name, ",");
               });

@@ -40,6 +40,7 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
         active: true,
       });
     } catch (ex: any) {
+      console.error(ex.stack);
       toast(ex.toString(), {
         position: "top-right",
       });
