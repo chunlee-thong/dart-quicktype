@@ -614,7 +614,7 @@ export class CustomDartRenderer extends ConvenienceRenderer {
 
   protected checkClassNameReplacement(jsonName: string): string {
     var text = this.classOptions.classNameReplace;
-    if (text.length > 0 || text != "") {
+    if (text) {
       var parts = text.split(",");
       var className = dartNameStyle(true, false, jsonName);
 
