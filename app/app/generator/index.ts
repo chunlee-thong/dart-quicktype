@@ -19,9 +19,9 @@ export type CustomDartOption = {
 };
 
 export type ClassOption = {
-  ignoreClasses: string;
-  headers: string;
-  classNameReplace: string;
+  ignoreClasses: string | undefined;
+  headers: string | undefined;
+  classNameReplace: string | undefined;
 };
 
 export async function runQuickType(

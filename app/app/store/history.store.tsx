@@ -130,13 +130,18 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
       models = (await getDocs(q)).docs.map((e) => {
         var model: History;
         const { className, active, jsonString, output, projectId, userId, options } = e.data();
+        const { ignoreClasses, headers, classNameReplace } = options;
         model = {
           id: e.id,
           className,
           active,
           jsonString,
           ///New field in 3.0.0
-          options: options ?? { ignoreClasses: "", headers: "" },
+          options: {
+            ignoreClasses: ignoreClasses ?? "",
+            headers: headers ?? "",
+            classNameReplace: classNameReplace ?? "",
+          },
           output,
           userId,
           projectId,
