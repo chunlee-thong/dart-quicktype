@@ -1,3 +1,6 @@
+## [3.2.1] - 15 Nov 2023
+- Bug fixes release
+
 ## [3.2.0] - 3 Nov 2023
 - Add new class options
 
