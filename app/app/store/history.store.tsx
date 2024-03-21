@@ -90,7 +90,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     value.id = value.id ?? doc(get().collectionRef("models")).id;
     var data = [...get().models];
     var exist = data.find((e) => e.className == value.className);
-    console.log(value);
+    console.log(exist, value);
     if (!exist) {
       data.splice(0, 0, value);
     } else {

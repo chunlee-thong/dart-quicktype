@@ -613,20 +613,23 @@ export class CustomDartRenderer extends ConvenienceRenderer {
   }
 
   protected checkClassNameReplacement(jsonName: string, type: Sourcelike) {
-    var text = this.classOptions.classNameReplace;
-    if (text !== "") {
-      var parts = text.split(",");
-      var className = dartNameStyle(true, false, jsonName);
-
-      for (var part of parts) {
-        var chunks = part.split("=");
-        if (chunks[0] == className) {
-          className = chunks[1];
-        }
-      }
-      return className;
-    }
     return type;
+    // var text = this.classOptions.classNameReplace;
+    // if (text !== "") {
+    //   var parts = text.split(",");
+    //   var className = dartNameStyle(true, false, jsonName);
+    //   console.log(className);
+
+    //   for (var part of parts) {
+    //     var chunks = part.split("=");
+    //     if (chunks.length < 1) continue;
+    //     if (chunks[0] == className) {
+    //       className = chunks[1];
+    //     }
+    //   }
+    //   return className;
+    // }
+    // return type;
   }
 
   protected emitClassDefinition(c: ClassType, className: Name): void {

@@ -38,9 +38,3 @@ When Dart class is generated from json, nullable or non-nullable field are defin
 - Array can never be null
 - Object and DateTime always nullable
 - Other types can configure with checkbox setting
-
-
-### Customize for your use case
-- edit Dart's quicktype config in **custom_dart_renderer.ts**
-- run **npm run build** to build from ts to vanilla js
-- test your change in index.html

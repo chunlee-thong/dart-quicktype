@@ -1,3 +1,7 @@
+## [3.3.0] - 21 March 2024
+- Fix duplicate history
+- Fix class name replace not working properly
+
 ## [3.2.1] - 15 Nov 2023
 - Bug fixes release
 

@@ -128,7 +128,7 @@ const Setting = () => {
           )}
         </Paper>
       )}
-      <p className="my-8">Version: 3.2.1</p>
+      <p className="my-8">Version: 3.3.0</p>
     </div>
   );
 };

@@ -30,15 +30,19 @@ const useGeneratorStore = create<GeneratorState>((set, get) => ({
       const result = await runQuickType(get().className, formatted, setting, get().classOptions);
       set({ output: result, json: formatted });
       const history = useHistoryStore.getState();
-      const id = get().className === get().history?.className ? get().history?.id : null;
-      history.saveHistory({
+      const same = get().className === get().history?.className;
+      console.log(same, get().history);
+      const id = same ? get().history?.id : null;
+      const value = {
         id: id,
         className: get().className,
         jsonString: get().json,
         output: result,
         options: get().classOptions,
         active: true,
-      });
+      };
+      history.saveHistory(value);
+      get().init(value);
     } catch (ex: any) {
       console.error(ex.stack);
       toast(ex.toString(), {

@@ -52,6 +52,17 @@ export async function runQuickType(
   var find = ", '";
   var regex = new RegExp(find, "g");
   data = data.replace(regex, "'");
+
+  var text = classOptions.classNameReplace ?? "";
+  if (text !== "") {
+    var parts = text.split(",");
+    for (var part of parts) {
+      var chunks = part.split("=");
+      if (chunks.length > 1) {
+        data = data.replace(chunks[0], chunks[1]);
+      }
+    }
+  }
   //
   if (dartOptions.generateJsonComment) {
     data = data + "\n/*\n" + jsonString + "*/";
