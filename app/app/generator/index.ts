@@ -59,7 +59,7 @@ export async function runQuickType(
     for (var part of parts) {
       var chunks = part.split("=");
       if (chunks.length > 1) {
-        data = data.replace(chunks[0], chunks[1]);
+        data = data.replaceAll(chunks[0], chunks[1]);
       }
     }
   }
